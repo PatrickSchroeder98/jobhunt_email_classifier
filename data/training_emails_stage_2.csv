@@ -1,0 +1,21 @@
+id,email_text,is_confirmation
+1,We invite you to the next step of our hiring process. Please schedule an interview using the link below.,False
+2,Unfortunately after careful consideration we will not be moving forward with your application.,False
+3,Thank you for applying for this job offer. We will contact you after reviewing your resume.,True
+4,Thank you for applying to our company but after careful review we have decided not to move forward with your application at this time,False
+5,We appreciate your interest in the role but unfortunately we will not be continuing with your candidacy,False
+6,We inform that the recruitment timeline for the graphic designer position has been extended you will receive an update once the selection phase resumes,True
+7,Your application for the support specialist role is under consideration please be patient while our team reviews all candidates,True
+8,After evaluating your profile we have chosen to pursue other candidates and will not be offering you the position,False
+9,Your application has been reviewed and we regret to inform you that you will not be moving to the next stage,False
+10,We confirm receipt of your application for the junior developer position our team will review all submissions and contact selected candidates,True
+11,Your application for the data analyst role has been successfully received please note that due to a high number of applicants response times may vary,True
+12,Thank you for submitting your resume for the marketing assistant role we appreciate your interest in joining our company and will be in touch if shortlisted,True
+13,Congratulations you have been selected to move forward to the next step of the hiring process please schedule an interview at your earliest convenience,False
+14,We are pleased to inform you that you have advanced to the next round of our selection process please confirm your availability for an interview,False
+15,Our team was impressed by your application and we would like to invite you to a phone screening,False
+16,You have been shortlisted for the position and we would like to invite you for an interview,False
+17,We inform you that the recruitment process for the marketing position is taking longer than expected we will update you when we have news,True
+18,This is to confirm that your application for the internship program has been received and is under consideration,True
+19,Due to a high number of applicants the selection process for the design role is delayed but we will contact you if you are shortlisted,True
+20,This message confirms that we have received your application for the engineering position the review process is currently ongoing,True
