@@ -1,0 +1,21 @@
+id,email_text,is_invitation
+1,We invite you to the next step of our hiring process. Please schedule an interview using the link below.,True
+2,Unfortunately after careful consideration we will not be moving forward with your application.,False
+3,Thank you for applying to our company but after careful review we have decided not to move forward with your application at this time,False
+4,We appreciate your interest in the role but unfortunately we will not be continuing with your candidacy,False
+5,After evaluating your profile we have chosen to pursue other candidates and will not be offering you the position,False
+6,Your application has been reviewed and we regret to inform you that you will not be moving to the next stage,False
+7,Congratulations you have been selected to move forward to the next step of the hiring process please schedule an interview at your earliest convenience,True
+8,We are pleased to inform you that you have advanced to the next round of our selection process please confirm your availability for an interview,True
+9,Our team was impressed by your application and we would like to invite you to a phone screening,True
+10,You have been shortlisted for the position and we would like to invite you for an interview,True
+11,We are pleased to invite you to the next stage of recruitment please schedule an interview using the provided link,True
+12,Thank you for your interest in the marketing assistant role unfortunately we have decided to move forward with other candidates,False
+13,After reviewing your application for the software developer position we regret to inform you that you were not selected,False
+14,Congratulations you have been shortlisted for the software engineer position please join us for an online technical interview next week,True
+15,Your application impressed our hiring team we would like to invite you to complete a short online assessment,True
+16,We appreciate your time and effort in applying but your profile does not meet our current requirements,False
+17,We are happy to inform you that you have advanced to the final interview round details will follow shortly,True
+18,Following our recent review process we have chosen another candidate whose qualifications more closely match the role,False
+19,Your application has been carefully considered but we will not be progressing with it at this time,False
+20,You have been selected for a phone interview for the data analyst position please confirm your availability,True

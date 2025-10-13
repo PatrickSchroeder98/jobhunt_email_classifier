@@ -1,0 +1,41 @@
+id,email_text,email_type
+1,We invite you to the next step of our hiring process. Please schedule an interview using the link below.,Invitation
+2,Unfortunately after careful consideration we will not be moving forward with your application.,Rejection
+3,We would like to invite you to participate in our customer satisfaction survey and share your feedback,Other
+4,We appreciate your interest in the role but unfortunately we will not be continuing with your candidacy,Rejection
+5,We confirm receipt of your application for the junior developer position our team will review all submissions and contact selected candidates,Confirmation
+6,Your application has been reviewed and we regret to inform you that you will not be moving to the next stage,Rejection
+7,Congratulations you have been selected to move forward to the next step of the hiring process please schedule an interview at your earliest convenience,Invitation
+8,We are pleased to inform you that you have advanced to the next round of our selection process please confirm your availability for an interview,Invitation
+9,Our team was impressed by your application and we would like to invite you to a phone screening,Invitation
+10,You have been shortlisted for the position and we would like to invite you for an interview,Invitation
+11,We are pleased to invite you to the next stage of recruitment please schedule an interview using the provided link,Invitation
+12,Thank you for your interest in the marketing assistant role unfortunately we have decided to move forward with other candidates,Rejection
+13,After reviewing your application for the software developer position we regret to inform you that you were not selected,Rejection
+14,Congratulations you have been shortlisted for the software engineer position please join us for an online technical interview next week,Invitation
+15,Join us for our upcoming webinar about personal finance tips and strategies. Click the link below to book your spot,Other
+16,We appreciate your time and effort in applying but your profile does not meet our current requirements,Rejection
+17,We are happy to inform you that you have advanced to the final interview round details will follow shortly,Invitation
+18,Following our recent review process we have chosen another candidate whose qualifications more closely match the role,Rejection
+19,Your application has been carefully considered but we will not be progressing with it at this time,Rejection
+20,Your account password was successfully changed if this was not you please contact support immediately,Other
+21,Thank you for applying for this job offer. We will contact you after reviewing your resume.,Confirmation
+22,We noticed unusual activity on your bank account please verify your recent transactions,Other
+23,You have a new message from your internet service provider please log in to view it,Other
+24,We inform that the recruitment timeline for the graphic designer position has been extended you will receive an update once the selection phase resumes,Confirmation
+25,Your application for the support specialist role is under consideration please be patient while our team reviews all candidates,Confirmation
+26,After evaluating your profile we have chosen to pursue other candidates and will not be offering you the position,Rejection
+27,Your online order has been received and will be processed within two business days,Other
+28,Good morning check our extraordinary discounts on new TVs. Click the link below:,Other
+29,Your application for the data analyst role has been successfully received please note that due to a high number of applicants response times may vary,Confirmation
+30,Hi friend we are going to cinema tommorow evening. Will you go with us?,Other
+31,Reminder your gym membership renewal is due next week. You can extend it by calling our customer service or on our website,Other
+32,Thank you for submitting your resume for the marketing assistant role we appreciate your interest in joining our company and will be in touch if shortlisted,Confirmation
+33,We inform you that the recruitment process for the marketing position is taking longer than expected we will update you when we have news,Confirmation
+34,This is to confirm that your application for the internship program has been received and is under consideration,Confirmation
+35,Your package has been shipped and should arrive within three business days. Use the link below to track your order,Other
+36,Due to a high number of applicants the selection process for the design role is delayed but we will contact you if you are shortlisted,Confirmation
+37,This message confirms that we have received your application for the engineering position the review process is currently ongoing,Confirmation
+38,Thank you for applying to our company but after careful review we have decided not to move forward with your application at this time,Rejection
+39,Your application impressed our hiring team we would like to invite you to complete a short online assessment,Invitation
+40,You have been selected for a phone interview for the data analyst position please confirm your availability,Invitation
