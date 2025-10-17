@@ -76,3 +76,23 @@ class Model:
 
     def get_random_state(self):
         return self.random_state
+
+    def build_pipeline(self):
+        self.pipeline = Pipeline([
+            ("tfidf", TfidfVectorizer()),
+            ("classifier", self.clf)
+        ])
+
+    def train(self):
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
+            self.X, self.y, test_size=self.test_size, stratify=self.y, random_state=self.random_state
+        )
+        self.pipeline.fit(self.X_train, self.y_train)
+        self.y_pred = self.pipeline.predict(self.X_test)
+
+
+    def count_accuracy(self):
+        return accuracy_score(self.y_test, self.y_pred), classification_report(self.y_test, self.y_pred)
+
+
+
