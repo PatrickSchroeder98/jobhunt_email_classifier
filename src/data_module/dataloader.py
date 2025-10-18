@@ -1,4 +1,6 @@
 import pandas as pd
+from src.exceptions.exceptions import PathError
+
 
 class DataLoader:
     """Class that handles data loading."""
@@ -17,6 +19,9 @@ class DataLoader:
 
     def load_data_csv(self):
         """Method that loads data from csv file and returns dataframe."""
-        df = pd.read_csv(self.get_path(), on_bad_lines="warn")
-        df.columns = df.columns.str.strip()
-        return df
+        try:
+            df = pd.read_csv(self.get_path(), on_bad_lines="warn")
+            df.columns = df.columns.str.strip()
+            return df
+        except FileNotFoundError:
+            raise PathError()
