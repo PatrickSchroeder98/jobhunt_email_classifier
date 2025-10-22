@@ -92,3 +92,52 @@ class EmailClassifierApp:
         train_pipeline(path2, classifier_option_2, self.set_model2_clf, column_name_2)
         train_pipeline(path3, classifier_option_3, self.set_model3_clf, column_name_3)
 
+    def view_3_stage_pipelines_accuracy(self):
+        """Method displays the accuracy of the 3 pipelines."""
+        try:
+            if self.model1 is None or self.model2 is None or self.model3 is None:
+                raise ModelNotFound()
+        except ModelNotFound as e:
+            print(e.get_message())
+            print("Error code: " + e.get_code())
+            return None
+        else:
+            def view(stage, model):
+                """Helper function for viewing 3 stage pipelines accuracy."""
+                print(stage + " stage accuracy: ")
+                accuracy = model.count_accuracy()
+                print(accuracy[0])
+                print(accuracy[1])
+
+            stages = ['1st', '2nd', '3rd']
+            models = [self.model1, self.model2, self.model3]
+
+            for s, m in zip(stages, models):
+                view(s, m)
+
+    def classify_emails(self, emails):
+        """Classify one email through 3-stage pipelines."""
+        try:
+            if self.model1 is None or self.model2 is None or self.model3 is None:
+                raise ModelNotFound()
+        except ModelNotFound as e:
+            print(e.get_message())
+            print("Error code: " + e.get_code())
+            return None
+        else:
+            prediction = self.model1.pipeline.predict(emails)
+
+            if not bool(prediction):
+                return "This email is not related to job hunting."
+
+            prediction = self.model2.pipeline.predict(emails)
+
+            if bool(prediction):
+                return "This email is a confirmation."
+
+            prediction = self.model3.pipeline.predict(emails)
+
+            if bool(prediction):
+                return "This email is an invitation."
+            else:
+                return "This email is a rejection."
