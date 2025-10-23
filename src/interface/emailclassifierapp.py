@@ -1,6 +1,6 @@
 from src.classifiers.classifier import Classifier
 from src.data_module.dataloader import DataLoader
-from src.exceptions.exceptions import PathError, ClassifierOptionError, ModelNotFound
+from src.exceptions.exceptions import PathError, ClassifierOptionError, ModelNotFound, InputDataError
 from src.models.model import Model
 
 
@@ -116,7 +116,7 @@ class EmailClassifierApp:
                 view(s, m)
 
     def classify_emails(self, emails):
-        """Classify one email through 3-stage pipelines."""
+        """Classify one or multiple emails through 3-stage pipelines."""
         try:
             if self.model1 is None or self.model2 is None or self.model3 is None:
                 raise ModelNotFound()
@@ -125,19 +125,49 @@ class EmailClassifierApp:
             print("Error code: " + e.get_code())
             return None
         else:
-            prediction = self.model1.pipeline.predict(emails)
 
-            if not bool(prediction):
-                return "This email is not related to job hunting."
+            if isinstance(emails, str):
+                emails = [emails]
+            try:
+                if not isinstance(emails, list):
+                    raise InputDataError()
 
-            prediction = self.model2.pipeline.predict(emails)
+                for email in emails:
+                    if not isinstance(email, str):
+                        raise InputDataError()
+            except InputDataError as e:
+                print(e.get_message())
+                print("Error code: " + e.get_code())
+                return None
 
-            if bool(prediction):
-                return "This email is a confirmation."
+            results = []
 
-            prediction = self.model3.pipeline.predict(emails)
+            for i, text in enumerate(emails):
+                # --- Stage 1: Is it jobhunt-related? ---
+                prediction_stage_1 = self.model1.pipeline.predict([text])[0]
+                if not bool(prediction_stage_1):
+                    results.append({
+                        "email_index": i,
+                        "classification": "Not job-hunt related"
+                    })
+                    continue
 
-            if bool(prediction):
-                return "This email is an invitation."
-            else:
-                return "This email is a rejection."
+                # --- Stage 2: Confirmation or next step? ---
+                prediction_stage2 = self.model2.pipeline.predict([text])[0]
+                if bool(prediction_stage2):
+                    results.append({
+                        "email_index": i,
+                        "classification": "Confirmation"
+                    })
+                    continue
+
+                # --- Stage 3: Invitation or Rejection? ---
+                prediction_stage3 = self.model3.pipeline.predict([text])[0]
+                classification = "Invitation" if bool(prediction_stage3) else "Rejection"
+
+                results.append({
+                    "email_index": i,
+                    "classification": classification
+                })
+
+            return results
