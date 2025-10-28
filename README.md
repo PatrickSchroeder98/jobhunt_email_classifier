@@ -12,9 +12,11 @@ This project focuses on the development of a Natural Language Processing (NLP) b
 
 
 ## Technologies used
-* Python programming language.
-* Scikit-learn NLP Libraries.
-* Pandas.
+* Python programming language
+* Scikit-learn NLP Modules
+* Pandas
+* Black
+* Unittest
 
 ## Tests  
 The project will include a comprehensive set of tests to ensure that all functionalities are working correctly.  

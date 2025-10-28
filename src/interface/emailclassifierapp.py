@@ -218,3 +218,39 @@ class EmailClassifierApp:
             accuracy = self.multiclassifier_model.count_accuracy()
             print(accuracy[0])
             print(accuracy[1])
+
+    def predict_with_multiclassifier(self, emails):
+        """Method predicts emails' type with multiclassifier."""
+
+        try:
+            if self.multiclassifier_model is None:
+                raise ModelNotFound()
+        except ModelNotFound as e:
+            print(e.get_message())
+            print("Error code: " + e.get_code())
+            return None
+        else:
+
+            if isinstance(emails, str):
+                emails = [emails]
+            try:
+                if not isinstance(emails, list):
+                    raise InputDataError()
+
+                for email in emails:
+                    if not isinstance(email, str):
+                        raise InputDataError()
+            except InputDataError as e:
+                print(e.get_message())
+                print("Error code: " + e.get_code())
+                return None
+
+            results = []
+
+            for i, text in enumerate(emails):
+                # --- Stage 1: Is it jobhunt-related? ---
+                prediction_stage_1 = self.multiclassifier_model.pipeline.predict([text])[0]
+
+                results.append({"email_index": i, "classification": str(prediction_stage_1)})
+
+            return results
