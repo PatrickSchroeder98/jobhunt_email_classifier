@@ -61,5 +61,65 @@ class TestModel(unittest.TestCase):
 
         del clf, model
 
+    def test_set_y_train(self):
+        """Method tests the set_y_train method of the model."""
+        clf = Classifier()
+        model = Model(clf)
+
+        model.set_y_train([0, 1, 2])
+        self.assertEqual(model.y_train, [0, 1, 2])
+
+        del clf, model
+
+    def test_get_y_train(self):
+        """Method tests the get_y_train method of the model."""
+        clf = Classifier()
+        model = Model(clf)
+
+        model.y_train = [0, 1, 2]
+        self.assertEqual(model.get_y_train(), [0, 1, 2])
+
+        del clf, model
+
+    def test_set_X_test(self):
+        """Method tests the set_X_test method of the model."""
+        clf = Classifier()
+        model = Model(clf)
+
+        model.set_X_test([0, 1, 2])
+        self.assertEqual(model.X_test, [0, 1, 2])
+
+        del clf, model
+
+    def test_get_X_test(self):
+        """Method tests the get_X_test method of the model."""
+        clf = Classifier()
+        model = Model(clf)
+
+        model.X_test = [0, 1, 2]
+        self.assertEqual(model.get_X_test(), [0, 1, 2])
+
+        del clf, model
+
+    def test_set_y_test(self):
+        """Method tests the set_y_test method of the model."""
+        clf = Classifier()
+        model = Model(clf)
+
+        model.set_y_test([0, 1, 2])
+        self.assertEqual(model.y_test, [0, 1, 2])
+
+        del clf, model
+
+    def test_get_y_test(self):
+        """Method tests the get_y_test method of the model."""
+        clf = Classifier()
+        model = Model(clf)
+
+        model.y_test = [0, 1, 2]
+        self.assertEqual(model.get_y_test(), [0, 1, 2])
+
+        del clf, model
+
 if __name__ == "__main__":
     unittest.main()
