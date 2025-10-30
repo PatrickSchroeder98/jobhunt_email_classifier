@@ -23,6 +23,11 @@ class EmailClassifierApp:
         self.CLASSIFIERS = {
             "MultinomialNB": self.classifier.set_clf_nb,
             "LogisticRegression": self.classifier.set_clf_lr,
+            "ComplementNB": self.classifier.set_clf_cnb,
+            "BernoulliNB": self.classifier.set_clf_bnb,
+            "SGDClassifier": self.classifier.set_clf_sgd,
+            "RidgeClassifier": self.classifier.set_clf_rdg,
+            "RandomForestClassifier": self.classifier.set_clf_rfc,
         }
 
     def set_model1_clf(self, clf):
