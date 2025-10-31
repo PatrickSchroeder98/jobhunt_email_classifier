@@ -1,8 +1,16 @@
 from sklearn.linear_model import LogisticRegression, SGDClassifier, RidgeClassifier
 from sklearn.naive_bayes import MultinomialNB, ComplementNB, BernoulliNB
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier, HistGradientBoostingClassifier, VotingClassifier, StackingClassifier
+from sklearn.ensemble import (
+    RandomForestClassifier,
+    GradientBoostingClassifier,
+    AdaBoostClassifier,
+    HistGradientBoostingClassifier,
+    VotingClassifier,
+    StackingClassifier,
+)
 from sklearn.svm import LinearSVC, SVC
 from sklearn.neighbors import KNeighborsClassifier
+
 
 class Classifier:
     """Class responsible for classifiers used in predictive model."""
@@ -46,3 +54,36 @@ class Classifier:
     def set_clf_rfc(self):
         """Method that can set classifier as RandomForestClassifier."""
         self.set_classifier(RandomForestClassifier())
+
+    def set_clf_gbc(self):
+        """Method that can set classifier as GradientBoostingClassifier."""
+        self.set_classifier(GradientBoostingClassifier())
+
+    def set_clf_abc(self):
+        """Method that can set classifier as AdaBoostClassifier."""
+        self.set_classifier(AdaBoostClassifier())
+
+    def set_clf_lsv(self):
+        """Method that can set classifier as LinearSVC."""
+        self.set_classifier(LinearSVC())
+
+    def set_clf_svc(self):
+        """Method that can set classifier as SVC."""
+        self.set_classifier(SVC())
+
+    def set_clf_knn(self):
+        """Method that can set classifier as KNeighborsClassifier."""
+        self.set_classifier(KNeighborsClassifier())
+
+    def set_clf_vtc(self):
+        """Method that can set classifier as VotingClassifier."""
+        self.set_classifier(
+            VotingClassifier(
+                estimators=[
+                    ("lr", LogisticRegression(max_iter=200)),
+                    ("nb", MultinomialNB()),
+                    ("svm", LinearSVC()),
+                ],
+                voting="hard",
+            )
+        )

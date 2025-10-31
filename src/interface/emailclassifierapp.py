@@ -28,6 +28,12 @@ class EmailClassifierApp:
             "SGDClassifier": self.classifier.set_clf_sgd,
             "RidgeClassifier": self.classifier.set_clf_rdg,
             "RandomForestClassifier": self.classifier.set_clf_rfc,
+            "GradientBoostingClassifier": self.classifier.set_clf_gbc,
+            "AdaBoostClassifier": self.classifier.set_clf_abc,
+            "LinearSVC": self.classifier.set_clf_lsv,
+            "SVC": self.classifier.set_clf_svc,
+            "KNeighborsClassifier": self.classifier.set_clf_knn,
+            "VotingClassifier": self.classifier.set_clf_vtc,
         }
 
     def set_model1_clf(self, clf):
