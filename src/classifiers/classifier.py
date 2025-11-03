@@ -18,6 +18,35 @@ class Classifier:
     def __init__(self):
         """Init method that initializes the classifier as none object."""
         self.classifier = None
+        self.max_iter = 200
+        self.vc_clf_1 = LogisticRegression(max_iter=self.max_iter)
+        self.vc_clf_2 = MultinomialNB()
+        self.vc_clf_3 = LinearSVC()
+        self.voting = "hard"
+
+    def set_max_iter(self, max_iter):
+        """Set maximum number of iterations."""
+        self.max_iter = max_iter
+
+    def set_vc_clf_1(self, vc_clf_1):
+        """Set 1st classifier object for voting classifier."""
+        self.vc_clf_1 = vc_clf_1
+
+    def set_vc_clf_2(self, vc_clf_2):
+        """Set 2nd classifier object for voting classifier."""
+        self.vc_clf_2 = vc_clf_2
+
+    def set_vc_clf_3(self, vc_clf_3):
+        """Set 3rd classifier object for voting classifier."""
+        self.vc_clf_3 = vc_clf_3
+
+    def set_voting_hard(self):
+        """Set voting option as 'hard' for classifier."""
+        self.voting = "hard"
+
+    def set_voting_soft(self):
+        """Set voting option as 'soft' for classifier."""
+        self.voting = "soft"
 
     def set_classifier(self, classifier):
         """Method that can set classifier."""
@@ -80,10 +109,10 @@ class Classifier:
         self.set_classifier(
             VotingClassifier(
                 estimators=[
-                    ("lr", LogisticRegression(max_iter=200)),
-                    ("nb", MultinomialNB()),
-                    ("svm", LinearSVC()),
+                    ("1", self.vc_clf_1),
+                    ("2", self.vc_clf_2),
+                    ("3", self.vc_clf_3),
                 ],
-                voting="hard",
+                voting=self.voting,
             )
         )

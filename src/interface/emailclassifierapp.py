@@ -265,3 +265,7 @@ class EmailClassifierApp:
                 results.append({"email_index": i, "classification": str(prediction_stage_1)})
 
             return results
+
+    def set_voting_classifier_parameters(self, estimator_1, estimator_2, estimator_3, voting_option):
+        """Method allows user to set estimators and voting option for VotingClassifier."""
+        pass
