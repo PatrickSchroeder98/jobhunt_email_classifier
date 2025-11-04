@@ -65,3 +65,54 @@ class InputDataError(Exception):
     def get_code(self):
         """Gets the exception code."""
         return self.code
+
+class VotingOptionForVotingClassifierError(Exception):
+    """Exception raised for errors when voting option is invalid."""
+
+    def __init__(self, message="Voting option for VotingClassifier is invalid.", code="INVALID_VOTING_OPTION_005"):
+        """Setting custom exception message."""
+        self.message = message
+        self.code = code
+        super().__init__(self.message, self.code)
+
+    def get_message(self):
+        """Gets the exception message."""
+        return self.message
+
+    def get_code(self):
+        """Gets the exception code."""
+        return self.code
+
+class VotingClassifierNotSupported(Exception):
+    """Exception raised for errors when voting classifier is not supported."""
+
+    def __init__(self, message="VotingClassifier is not supported in this environment.", code="VOTING_CLASSIFIER_NOT_SUPPORTED_006"):
+        """Setting custom exception message."""
+        self.message = message
+        self.code = code
+        super().__init__(self.message, self.code)
+
+    def get_message(self):
+        """Gets the exception message."""
+        return self.message
+
+    def get_code(self):
+        """Gets the exception code."""
+        return self.code
+
+class EstimatorOptionError(Exception):
+    """Exception raised for errors when estimator option is invalid."""
+
+    def __init__(self, message="Provided estimator option is invalid. Default estimators will be used instead.", code="ESTIMATOR_NOT_FOUND_007"):
+        """Setting custom exception message."""
+        self.message = message
+        self.code = code
+        super().__init__(self.message, self.code)
+
+    def get_message(self):
+        """Gets the exception message."""
+        return self.message
+
+    def get_code(self):
+        """Gets the exception code."""
+        return self.code

@@ -24,6 +24,21 @@ class Classifier:
         self.vc_clf_3 = LinearSVC()
         self.voting = "hard"
 
+        self.ESTIMATORS_AND_CLASSIFIERS = {
+            "MultinomialNB": MultinomialNB,
+            "LogisticRegression": LogisticRegression,
+            "ComplementNB": ComplementNB,
+            "BernoulliNB": BernoulliNB,
+            "SGDClassifier": SGDClassifier,
+            "RidgeClassifier": RidgeClassifier,
+            "RandomForestClassifier": RandomForestClassifier,
+            "GradientBoostingClassifier": GradientBoostingClassifier,
+            "AdaBoostClassifier": AdaBoostClassifier,
+            "LinearSVC": LinearSVC,
+            "SVC": SVC,
+            "KNeighborsClassifier": KNeighborsClassifier,
+        }
+
     def set_max_iter(self, max_iter):
         """Set maximum number of iterations."""
         self.max_iter = max_iter
@@ -58,51 +73,51 @@ class Classifier:
 
     def set_clf_nb(self):
         """Method that can set classifier as MultinomialNB."""
-        self.set_classifier(MultinomialNB())
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["MultinomialNB"]())
 
     def set_clf_cnb(self):
         """Method that can set classifier as ComplementNB."""
-        self.set_classifier(ComplementNB())
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["ComplementNB"]())
 
     def set_clf_bnb(self):
         """Method that can set classifier as BernoulliNB."""
-        self.set_classifier(BernoulliNB())
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["BernoulliNB"]())
 
     def set_clf_lr(self):
         """Method that can set classifier as LogisticRegression."""
-        self.set_classifier(LogisticRegression())
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["LogisticRegression"]())
 
     def set_clf_sgd(self):
         """Method that can set classifier as SGDClassifier."""
-        self.set_classifier(SGDClassifier())
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["SGDClassifier"]())
 
     def set_clf_rdg(self):
         """Method that can set classifier as RidgeClassifier."""
-        self.set_classifier(RidgeClassifier())
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["RidgeClassifier"]())
 
     def set_clf_rfc(self):
         """Method that can set classifier as RandomForestClassifier."""
-        self.set_classifier(RandomForestClassifier())
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["RandomForestClassifier"]())
 
     def set_clf_gbc(self):
         """Method that can set classifier as GradientBoostingClassifier."""
-        self.set_classifier(GradientBoostingClassifier())
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["GradientBoostingClassifier"]())
 
     def set_clf_abc(self):
         """Method that can set classifier as AdaBoostClassifier."""
-        self.set_classifier(AdaBoostClassifier())
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["AdaBoostClassifier"])
 
     def set_clf_lsv(self):
         """Method that can set classifier as LinearSVC."""
-        self.set_classifier(LinearSVC())
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["LinearSVC"]())
 
     def set_clf_svc(self):
         """Method that can set classifier as SVC."""
-        self.set_classifier(SVC())
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["SVC"]())
 
     def set_clf_knn(self):
         """Method that can set classifier as KNeighborsClassifier."""
-        self.set_classifier(KNeighborsClassifier())
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["KNeighborsClassifier"])
 
     def set_clf_vtc(self):
         """Method that can set classifier as VotingClassifier."""
