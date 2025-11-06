@@ -5,6 +5,9 @@ from src.exceptions.exceptions import (
     ClassifierOptionError,
     ModelNotFound,
     InputDataError,
+    VotingOptionForVotingClassifierError,
+    EstimatorOptionError,
+    VotingClassifierNotSupported,
 )
 from src.models.model import Model
 
@@ -67,9 +70,9 @@ class EmailClassifierApp:
             print("Error code: " + e.get_code())
             return None
 
-    def classifier_option_check(self, option):
+    def classifier_option_check(self, option, constant):
         """Method that checks if provided classifier option is valid."""
-        return False if option not in self.CLASSIFIERS.keys() else True
+        return False if option not in constant.keys() else True
 
     def train_3_stage_pipelines(
         self,
@@ -90,11 +93,20 @@ class EmailClassifierApp:
             """Helper function for training pipeline."""
             try:
                 df = self.load_data_csv(path)
-                if not self.classifier_option_check(classifier_option):
+                if not self.classifier_option_check(classifier_option, self.CLASSIFIERS):
                     raise ClassifierOptionError
                 else:
-                    # uses the key of dictionary and calls the corresponding method
-                    self.CLASSIFIERS[classifier_option]()
+                    try:
+                        if classifier_option == "VotingClassifier":
+                            raise VotingClassifierNotSupported
+                    except VotingClassifierNotSupported as e:
+                        print(e.get_message())
+                        print("Error code: " + e.get_code())
+                        print("Classifier reset to default MultinomialNB")
+                        classifier_option = "MultinomialNB"
+                    finally:
+                        # uses the key of dictionary and calls the corresponding method
+                        self.CLASSIFIERS[classifier_option]()
             except ClassifierOptionError as e:
                 print(e.get_message())
                 print("Error code: " + e.get_code())
@@ -194,15 +206,22 @@ class EmailClassifierApp:
         classifier_option="MultinomialNB",
         column_name_train="email_type",
         column_name_main="email_text",
+        estimator_1 = None,
+        estimator_2 = None,
+        estimator_3 = None,
+        voting_option= "hard"
     ):
         """Method trains a pipeline that utilizes multiclassification."""
         try:
             df = self.load_data_csv(path)
-            if not self.classifier_option_check(classifier_option):
+            if not self.classifier_option_check(classifier_option, self.CLASSIFIERS):
                 raise ClassifierOptionError
             else:
                 # uses the key of dictionary and calls the corresponding method
                 self.CLASSIFIERS[classifier_option]()
+
+                if classifier_option == "VotingClassifier":
+                    self.set_voting_classifier_parameters(estimator_1, estimator_2, estimator_3, voting_option)
         except ClassifierOptionError as e:
             print(e.get_message())
             print("Error code: " + e.get_code())
@@ -259,13 +278,38 @@ class EmailClassifierApp:
             results = []
 
             for i, text in enumerate(emails):
-                # --- Stage 1: Is it jobhunt-related? ---
                 prediction_stage_1 = self.multiclassifier_model.pipeline.predict([text])[0]
-
                 results.append({"email_index": i, "classification": str(prediction_stage_1)})
 
             return results
 
     def set_voting_classifier_parameters(self, estimator_1, estimator_2, estimator_3, voting_option):
         """Method allows user to set estimators and voting option for VotingClassifier."""
-        pass
+
+        if estimator_1 is None and estimator_2 is None and estimator_3 is None:
+            return None
+
+        try:
+            if voting_option == "hard":
+                self.classifier.set_voting_hard()
+            elif voting_option == "soft":
+                self.classifier.set_voting_soft()
+            else:
+                raise VotingOptionForVotingClassifierError
+        except VotingOptionForVotingClassifierError as e:
+            print(e.get_message())
+            print("Error code: " + e.get_code())
+        else:
+            try:
+                if not self.classifier_option_check(estimator_1, self.classifier.ESTIMATORS_AND_CLASSIFIERS) \
+                        or not self.classifier_option_check(estimator_2, self.classifier.ESTIMATORS_AND_CLASSIFIERS)\
+                        or not self.classifier_option_check(estimator_3, self.classifier.ESTIMATORS_AND_CLASSIFIERS):
+                    raise EstimatorOptionError
+            except EstimatorOptionError as e:
+                print(e.get_message())
+                print("Error code: " + e.get_code())
+            else:
+                self.classifier.set_vc_clf_1(self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_1]())
+                self.classifier.set_vc_clf_2(self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_2]())
+                self.classifier.set_vc_clf_3(self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_3]())
+                self.classifier.set_clf_vtc()
