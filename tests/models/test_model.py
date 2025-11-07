@@ -1,4 +1,7 @@
 import unittest
+
+from sklearn.naive_bayes import MultinomialNB
+
 from src.models.model import Model
 from src.classifiers.classifier import Classifier
 from sklearn.pipeline import Pipeline
@@ -214,6 +217,91 @@ class TestModel(unittest.TestCase):
 
         model.random_state = 42
         self.assertEqual(model.get_random_state(), 42)
+
+        del clf, model
+
+    def test_set_y_pred(self):
+        """Method tests the set_y_pred method of the model."""
+        clf = Classifier()
+        model = Model(clf)
+
+        model.set_y_pred([0, 1, 2])
+        self.assertEqual(model.y_pred, [0, 1, 2])
+
+        del clf, model
+
+    def test_get_y_pred(self):
+        """Method tests the get_y_pred method of the model."""
+        clf = Classifier()
+        model = Model(clf)
+
+        model.y_pred = [0, 1, 2]
+        self.assertEqual(model.get_y_pred(), [0, 1, 2])
+
+        del clf, model
+
+    def test_build_pipeline(self):
+        """Method tests the build_pipeline method of the model."""
+        clf = Classifier()
+        clf.set_clf_nb()
+        model = Model(clf.classifier)
+
+        self.assertIsNone(model.pipeline)
+        model.build_pipeline()
+        self.assertIsNotNone(model.pipeline)
+        self.assertEqual(model.pipeline.steps[0][0], "tfidf")
+        self.assertIsInstance(model.pipeline.steps[0][1], TfidfVectorizer)
+        self.assertEqual(model.pipeline.steps[1][0], "classifier")
+        self.assertIsInstance(model.pipeline.steps[1][1], MultinomialNB)
+
+        del clf, model
+
+    def test_train(self):
+        """Method tests the train method of the model."""
+        clf = Classifier()
+        clf.set_clf_nb()
+        model = Model(clf.classifier)
+
+        model.X = ['This is jobhunt related', 'Y', 'This is jobhunt related', 'Y', 'This is jobhunt related', 'Y']
+        model.y = ['True', 'False', 'True', 'False', 'True', 'False']
+        model.build_pipeline()
+        self.assertIsNone(model.X_train)
+        self.assertIsNone(model.X_test)
+        self.assertIsNone(model.y_train)
+        self.assertIsNone(model.y_test)
+        model.train()
+        self.assertIsNotNone(model.X_train)
+        self.assertIsNotNone(model.X_test)
+        self.assertIsNotNone(model.y_train)
+        self.assertIsNotNone(model.y_test)
+
+        del clf, model
+
+    def test_count_accuracy(self):
+        """Method tests the count_accuracy method of the model."""
+        clf = Classifier()
+        clf.set_clf_nb()
+        model = Model(clf.classifier)
+        model.X = ['This is jobhunt related', 'Y', 'This is jobhunt related', 'Y', 'This is jobhunt related', 'Y']
+        model.y = ['True', 'False', 'True', 'False', 'True', 'False']
+        model.build_pipeline()
+        model.train()
+        result = model.count_accuracy()
+
+        # --- structural tests ---
+        self.assertIsInstance(result, tuple)
+        self.assertEqual(len(result), 2)
+
+        # --- check accuracy value ---
+        self.assertIsInstance(result[0], float)
+        self.assertGreaterEqual(result[0], 0.0)
+        self.assertLessEqual(result[0], 1.0)
+
+        # --- check classification report ---
+        self.assertIsInstance(result[1], str)
+        self.assertIn("precision", result[1])
+        self.assertIn("recall", result[1])
+        self.assertIn("f1-score", result[1])
 
         del clf, model
 
