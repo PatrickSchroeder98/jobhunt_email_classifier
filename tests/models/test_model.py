@@ -1,13 +1,13 @@
 import unittest
-
 from sklearn.naive_bayes import MultinomialNB
-
 from src.models.model import Model
 from src.classifiers.classifier import Classifier
 from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
 
+
 class TestModel(unittest.TestCase):
+    """Class with tests associated with Model class."""
 
     def test_init(self):
         """Method tests the initialization of a model"""
@@ -192,10 +192,7 @@ class TestModel(unittest.TestCase):
         clf.set_clf_nb()
         model = Model(clf)
 
-        p = Pipeline([
-            ("tfidf", TfidfVectorizer()),
-            ("classifier", model.clf)
-        ])
+        p = Pipeline([("tfidf", TfidfVectorizer()), ("classifier", model.clf)])
         model.pipeline = p
 
         self.assertEqual(model.get_pipeline(), p)
@@ -262,8 +259,15 @@ class TestModel(unittest.TestCase):
         clf.set_clf_nb()
         model = Model(clf.classifier)
 
-        model.X = ['This is jobhunt related', 'Y', 'This is jobhunt related', 'Y', 'This is jobhunt related', 'Y']
-        model.y = ['True', 'False', 'True', 'False', 'True', 'False']
+        model.X = [
+            "This is jobhunt related",
+            "Y",
+            "This is jobhunt related",
+            "Y",
+            "This is jobhunt related",
+            "Y",
+        ]
+        model.y = ["True", "False", "True", "False", "True", "False"]
         model.build_pipeline()
         self.assertIsNone(model.X_train)
         self.assertIsNone(model.X_test)
@@ -282,8 +286,15 @@ class TestModel(unittest.TestCase):
         clf = Classifier()
         clf.set_clf_nb()
         model = Model(clf.classifier)
-        model.X = ['This is jobhunt related', 'Y', 'This is jobhunt related', 'Y', 'This is jobhunt related', 'Y']
-        model.y = ['True', 'False', 'True', 'False', 'True', 'False']
+        model.X = [
+            "This is jobhunt related",
+            "Y",
+            "This is jobhunt related",
+            "Y",
+            "This is jobhunt related",
+            "Y",
+        ]
+        model.y = ["True", "False", "True", "False", "True", "False"]
         model.build_pipeline()
         model.train()
         result = model.count_accuracy()
@@ -304,6 +315,7 @@ class TestModel(unittest.TestCase):
         self.assertIn("f1-score", result[1])
 
         del clf, model
+
 
 if __name__ == "__main__":
     unittest.main()
