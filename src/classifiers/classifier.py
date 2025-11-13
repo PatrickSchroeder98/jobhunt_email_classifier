@@ -4,7 +4,6 @@ from sklearn.ensemble import (
     RandomForestClassifier,
     GradientBoostingClassifier,
     AdaBoostClassifier,
-    HistGradientBoostingClassifier,
     VotingClassifier,
     StackingClassifier,
 )
@@ -23,6 +22,10 @@ class Classifier:
         self.vc_clf_2 = MultinomialNB()
         self.vc_clf_3 = LinearSVC()
         self.voting = "hard"
+
+        self.sc_clf_1 = MultinomialNB()
+        self.sc_clf_2 = LinearSVC()
+        self.sc_clf_3 = RandomForestClassifier()
 
         self.ESTIMATORS_AND_CLASSIFIERS = {
             "MultinomialNB": MultinomialNB,
@@ -43,17 +46,33 @@ class Classifier:
         """Set maximum number of iterations."""
         self.max_iter = max_iter
 
+    def get_max_iter(self):
+        """Return maximum number of iterations."""
+        return self.max_iter
+
     def set_vc_clf_1(self, vc_clf_1):
-        """Set 1st classifier object for voting classifier."""
+        """Set 1st estimator for voting classifier."""
         self.vc_clf_1 = vc_clf_1
 
+    def get_vc_clf_1(self):
+        """Return 1st estimator for voting classifier."""
+        return self.vc_clf_1
+
     def set_vc_clf_2(self, vc_clf_2):
-        """Set 2nd classifier object for voting classifier."""
+        """Set 2nd estimator for voting classifier."""
         self.vc_clf_2 = vc_clf_2
 
+    def get_vc_clf_2(self):
+        """Return 2nd estimator for voting classifier."""
+        return self.vc_clf_2
+
     def set_vc_clf_3(self, vc_clf_3):
-        """Set 3rd classifier object for voting classifier."""
+        """Set 3rd estimator for voting classifier."""
         self.vc_clf_3 = vc_clf_3
+
+    def get_vc_clf_3(self):
+        """Return 3rd estimator for voting classifier."""
+        return self.vc_clf_3
 
     def set_voting_hard(self):
         """Set voting option as 'hard' for classifier."""
@@ -62,6 +81,30 @@ class Classifier:
     def set_voting_soft(self):
         """Set voting option as 'soft' for classifier."""
         self.voting = "soft"
+
+    def set_sc_clf_1(self, sc_clf_1):
+        """Set 1st estimator for scoring classifier."""
+        self.sc_clf_1 = sc_clf_1
+
+    def get_sc_clf_1(self):
+        """Return 1st estimator for scoring classifier."""
+        return self.sc_clf_1
+
+    def set_sc_clf_2(self, sc_clf_2):
+        """Set 2nd estimator for scoring classifier."""
+        self.sc_clf_2 = sc_clf_2
+
+    def get_sc_clf_2(self):
+        """Return 2nd estimator for scoring classifier."""
+        return self.sc_clf_2
+
+    def set_sc_clf_3(self, sc_clf_3):
+        """Set 3rd estimator for scoring classifier."""
+        self.sc_clf_3 = sc_clf_3
+
+    def get_sc_clf_3(self):
+        """Return 3rd estimator for scoring classifier."""
+        return self.sc_clf_3
 
     def set_classifier(self, classifier):
         """Method that can set classifier."""
@@ -124,10 +167,23 @@ class Classifier:
         self.set_classifier(
             VotingClassifier(
                 estimators=[
-                    ("1", self.vc_clf_1),
-                    ("2", self.vc_clf_2),
-                    ("3", self.vc_clf_3),
+                    ("1", self.get_vc_clf_1()),
+                    ("2", self.get_vc_clf_2()),
+                    ("3", self.get_vc_clf_3()),
                 ],
                 voting=self.voting,
+            )
+        )
+
+    def set_clf_stc(self):
+        """Method that can set classifier as StackingClassifier."""
+        self.set_classifier(
+            StackingClassifier(
+                estimators=[
+                    ("1", self.get_sc_clf_1()),
+                    ("2", self.get_vc_clf_2()),
+                    ("3", self.get_vc_clf_3()),
+                ]
+
             )
         )
