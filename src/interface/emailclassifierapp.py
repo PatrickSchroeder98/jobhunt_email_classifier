@@ -8,6 +8,7 @@ from src.exceptions.exceptions import (
     VotingOptionForVotingClassifierError,
     EstimatorOptionError,
     VotingClassifierNotSupported,
+    StackingClassifierNotSupported,
 )
 from src.models.model import Model
 
@@ -37,6 +38,7 @@ class EmailClassifierApp:
             "SVC": self.classifier.set_clf_svc,
             "KNeighborsClassifier": self.classifier.set_clf_knn,
             "VotingClassifier": self.classifier.set_clf_vtc,
+            "StackingClassifier": self.classifier.set_clf_stc,
         }
 
     def set_model1_clf(self, clf):
@@ -99,6 +101,15 @@ class EmailClassifierApp:
                     try:
                         if classifier_option == "VotingClassifier":
                             raise VotingClassifierNotSupported
+                        else:
+                            try:
+                                if classifier_option == "StackingClassifier":
+                                    raise StackingClassifierNotSupported
+                            except StackingClassifierNotSupported as e:
+                                print(e.get_message())
+                                print("Error code: " + e.get_code())
+                                print("Classifier reset to default MultinomialNB")
+                                classifier_option = "MultinomialNB"
                     except VotingClassifierNotSupported as e:
                         print(e.get_message())
                         print("Error code: " + e.get_code())
@@ -222,6 +233,10 @@ class EmailClassifierApp:
 
                 if classifier_option == "VotingClassifier":
                     self.set_voting_classifier_parameters(estimator_1, estimator_2, estimator_3, voting_option)
+
+                if classifier_option == "StackingClassifier":
+                    self.set_stacking_classifier_estimators(estimator_1, estimator_2, estimator_3)
+
         except ClassifierOptionError as e:
             print(e.get_message())
             print("Error code: " + e.get_code())
@@ -313,3 +328,24 @@ class EmailClassifierApp:
                 self.classifier.set_vc_clf_2(self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_2]())
                 self.classifier.set_vc_clf_3(self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_3]())
                 self.classifier.set_clf_vtc()
+
+    def set_stacking_classifier_estimators(self, estimator_1, estimator_2, estimator_3):
+        """Method allows user to set estimators for StackingClassifier."""
+
+        if estimator_1 is None and estimator_2 is None and estimator_3 is None:
+            return None
+
+        try:
+            if not self.classifier_option_check(estimator_1, self.classifier.ESTIMATORS_AND_CLASSIFIERS) \
+                    or not self.classifier_option_check(estimator_2, self.classifier.ESTIMATORS_AND_CLASSIFIERS) \
+                    or not self.classifier_option_check(estimator_3, self.classifier.ESTIMATORS_AND_CLASSIFIERS):
+                raise EstimatorOptionError
+        except EstimatorOptionError as e:
+            print(e.get_message())
+            print("Error code: " + e.get_code())
+        else:
+            self.classifier.set_sc_clf_1(self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_1]())
+            self.classifier.set_sc_clf_2(self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_2]())
+            self.classifier.set_sc_clf_3(self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_3]())
+            self.classifier.set_clf_stc()
+            
