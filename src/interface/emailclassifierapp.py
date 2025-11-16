@@ -95,7 +95,9 @@ class EmailClassifierApp:
             """Helper function for training pipeline."""
             try:
                 df = self.load_data_csv(path)
-                if not self.classifier_option_check(classifier_option, self.CLASSIFIERS):
+                if not self.classifier_option_check(
+                    classifier_option, self.CLASSIFIERS
+                ):
                     raise ClassifierOptionError
                 else:
                     try:
@@ -146,6 +148,7 @@ class EmailClassifierApp:
             print("Error code: " + e.get_code())
             return None
         else:
+
             def view(stage, model):
                 """Helper function for viewing 3 stage pipelines accuracy."""
                 print(stage + " stage accuracy: ")
@@ -217,10 +220,10 @@ class EmailClassifierApp:
         classifier_option="MultinomialNB",
         column_name_train="email_type",
         column_name_main="email_text",
-        estimator_1 = None,
-        estimator_2 = None,
-        estimator_3 = None,
-        voting_option= "hard"
+        estimator_1=None,
+        estimator_2=None,
+        estimator_3=None,
+        voting_option="hard",
     ):
         """Method trains a pipeline that utilizes multiclassification."""
         try:
@@ -232,10 +235,14 @@ class EmailClassifierApp:
                 self.CLASSIFIERS[classifier_option]()
 
                 if classifier_option == "VotingClassifier":
-                    self.set_voting_classifier_parameters(estimator_1, estimator_2, estimator_3, voting_option)
+                    self.set_voting_classifier_parameters(
+                        estimator_1, estimator_2, estimator_3, voting_option
+                    )
 
                 if classifier_option == "StackingClassifier":
-                    self.set_stacking_classifier_estimators(estimator_1, estimator_2, estimator_3)
+                    self.set_stacking_classifier_estimators(
+                        estimator_1, estimator_2, estimator_3
+                    )
 
         except ClassifierOptionError as e:
             print(e.get_message())
@@ -293,12 +300,18 @@ class EmailClassifierApp:
             results = []
 
             for i, text in enumerate(emails):
-                prediction_stage_1 = self.multiclassifier_model.pipeline.predict([text])[0]
-                results.append({"email_index": i, "classification": str(prediction_stage_1)})
+                prediction_stage_1 = self.multiclassifier_model.pipeline.predict(
+                    [text]
+                )[0]
+                results.append(
+                    {"email_index": i, "classification": str(prediction_stage_1)}
+                )
 
             return results
 
-    def set_voting_classifier_parameters(self, estimator_1, estimator_2, estimator_3, voting_option):
+    def set_voting_classifier_parameters(
+        self, estimator_1, estimator_2, estimator_3, voting_option
+    ):
         """Method allows user to set estimators and voting option for VotingClassifier."""
 
         if estimator_1 is None and estimator_2 is None and estimator_3 is None:
@@ -316,17 +329,31 @@ class EmailClassifierApp:
             print("Error code: " + e.get_code())
         else:
             try:
-                if not self.classifier_option_check(estimator_1, self.classifier.ESTIMATORS_AND_CLASSIFIERS) \
-                        or not self.classifier_option_check(estimator_2, self.classifier.ESTIMATORS_AND_CLASSIFIERS)\
-                        or not self.classifier_option_check(estimator_3, self.classifier.ESTIMATORS_AND_CLASSIFIERS):
+                if (
+                    not self.classifier_option_check(
+                        estimator_1, self.classifier.ESTIMATORS_AND_CLASSIFIERS
+                    )
+                    or not self.classifier_option_check(
+                        estimator_2, self.classifier.ESTIMATORS_AND_CLASSIFIERS
+                    )
+                    or not self.classifier_option_check(
+                        estimator_3, self.classifier.ESTIMATORS_AND_CLASSIFIERS
+                    )
+                ):
                     raise EstimatorOptionError
             except EstimatorOptionError as e:
                 print(e.get_message())
                 print("Error code: " + e.get_code())
             else:
-                self.classifier.set_vc_clf_1(self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_1]())
-                self.classifier.set_vc_clf_2(self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_2]())
-                self.classifier.set_vc_clf_3(self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_3]())
+                self.classifier.set_vc_clf_1(
+                    self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_1]()
+                )
+                self.classifier.set_vc_clf_2(
+                    self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_2]()
+                )
+                self.classifier.set_vc_clf_3(
+                    self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_3]()
+                )
                 self.classifier.set_clf_vtc()
 
     def set_stacking_classifier_estimators(self, estimator_1, estimator_2, estimator_3):
@@ -336,16 +363,29 @@ class EmailClassifierApp:
             return None
 
         try:
-            if not self.classifier_option_check(estimator_1, self.classifier.ESTIMATORS_AND_CLASSIFIERS) \
-                    or not self.classifier_option_check(estimator_2, self.classifier.ESTIMATORS_AND_CLASSIFIERS) \
-                    or not self.classifier_option_check(estimator_3, self.classifier.ESTIMATORS_AND_CLASSIFIERS):
+            if (
+                not self.classifier_option_check(
+                    estimator_1, self.classifier.ESTIMATORS_AND_CLASSIFIERS
+                )
+                or not self.classifier_option_check(
+                    estimator_2, self.classifier.ESTIMATORS_AND_CLASSIFIERS
+                )
+                or not self.classifier_option_check(
+                    estimator_3, self.classifier.ESTIMATORS_AND_CLASSIFIERS
+                )
+            ):
                 raise EstimatorOptionError
         except EstimatorOptionError as e:
             print(e.get_message())
             print("Error code: " + e.get_code())
         else:
-            self.classifier.set_sc_clf_1(self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_1]())
-            self.classifier.set_sc_clf_2(self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_2]())
-            self.classifier.set_sc_clf_3(self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_3]())
+            self.classifier.set_sc_clf_1(
+                self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_1]()
+            )
+            self.classifier.set_sc_clf_2(
+                self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_2]()
+            )
+            self.classifier.set_sc_clf_3(
+                self.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator_3]()
+            )
             self.classifier.set_clf_stc()
-            

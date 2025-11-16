@@ -144,7 +144,9 @@ class Classifier:
 
     def set_clf_gbc(self):
         """Method that can set classifier as GradientBoostingClassifier."""
-        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["GradientBoostingClassifier"]())
+        self.set_classifier(
+            self.ESTIMATORS_AND_CLASSIFIERS["GradientBoostingClassifier"]()
+        )
 
     def set_clf_abc(self):
         """Method that can set classifier as AdaBoostClassifier."""
@@ -184,6 +186,5 @@ class Classifier:
                     ("2", self.get_vc_clf_2()),
                     ("3", self.get_vc_clf_3()),
                 ]
-
             )
         )
