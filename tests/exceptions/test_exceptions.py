@@ -1,6 +1,13 @@
 import unittest
-from src.exceptions.exceptions import PathError, ClassifierOptionError, ModelNotFound, InputDataError, \
-    VotingOptionForVotingClassifierError, VotingClassifierNotSupported, EstimatorOptionError
+from src.exceptions.exceptions import (
+    PathError,
+    ClassifierOptionError,
+    ModelNotFound,
+    InputDataError,
+    VotingOptionForVotingClassifierError,
+    VotingClassifierNotSupported,
+    EstimatorOptionError,
+)
 
 
 class TestExceptions(unittest.TestCase):
@@ -73,7 +80,9 @@ class TestExceptions(unittest.TestCase):
     def test_InputDataError_get_message(self):
         """Method to test InputDataError Exception get_message method."""
         e = InputDataError()
-        self.assertEqual(e.get_message(), "Input data is not a string or list of strings.")
+        self.assertEqual(
+            e.get_message(), "Input data is not a string or list of strings."
+        )
         del e
 
     def test_InputDataError_get_code(self):
@@ -92,7 +101,9 @@ class TestExceptions(unittest.TestCase):
     def test_VotingOptionForVotingClassifierError_get_message(self):
         """Method to test VotingOptionForVotingClassifierError Exception get_message method."""
         e = VotingOptionForVotingClassifierError()
-        self.assertEqual(e.get_message(), "Voting option for VotingClassifier is invalid.")
+        self.assertEqual(
+            e.get_message(), "Voting option for VotingClassifier is invalid."
+        )
         del e
 
     def test_VotingOptionForVotingClassifierError_get_code(self):
@@ -104,14 +115,18 @@ class TestExceptions(unittest.TestCase):
     def test_VotingClassifierNotSupported_init(self):
         """Method to test VotingClassifierNotSupported Exception initialization."""
         e = VotingClassifierNotSupported()
-        self.assertEqual(e.message, "VotingClassifier is not supported in this environment.")
+        self.assertEqual(
+            e.message, "VotingClassifier is not supported in this environment."
+        )
         self.assertEqual(e.code, "VOTING_CLASSIFIER_NOT_SUPPORTED_006")
         del e
 
     def test_VotingClassifierNotSupported_get_message(self):
         """Method to test VotingClassifierNotSupported Exception get_message method."""
         e = VotingClassifierNotSupported()
-        self.assertEqual(e.get_message(), "VotingClassifier is not supported in this environment.")
+        self.assertEqual(
+            e.get_message(), "VotingClassifier is not supported in this environment."
+        )
         del e
 
     def test_VotingClassifierNotSupported_get_code(self):
@@ -123,14 +138,20 @@ class TestExceptions(unittest.TestCase):
     def test_EstimatorOptionError_init(self):
         """Method to test EstimatorOptionError Exception initialization."""
         e = EstimatorOptionError()
-        self.assertEqual(e.message, "Provided estimator option is invalid. Default estimators will be used instead.")
+        self.assertEqual(
+            e.message,
+            "Provided estimator option is invalid. Default estimators will be used instead.",
+        )
         self.assertEqual(e.code, "ESTIMATOR_NOT_FOUND_007")
         del e
 
     def test_EstimatorOptionError_get_message(self):
         """Method to test EstimatorOptionError Exception get_message method."""
         e = EstimatorOptionError()
-        self.assertEqual(e.get_message(), "Provided estimator option is invalid. Default estimators will be used instead.")
+        self.assertEqual(
+            e.get_message(),
+            "Provided estimator option is invalid. Default estimators will be used instead.",
+        )
         del e
 
     def test_EstimatorOptionError_get_code(self):
@@ -138,6 +159,7 @@ class TestExceptions(unittest.TestCase):
         e = EstimatorOptionError()
         self.assertEqual(e.get_code(), "ESTIMATOR_NOT_FOUND_007")
         del e
+
 
 if __name__ == "__main__":
     unittest.main()

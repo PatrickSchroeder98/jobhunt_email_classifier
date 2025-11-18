@@ -109,23 +109,24 @@ class Model:
 
     def build_pipeline(self):
         """Method builds the pipeline with TfidfVectorizer and chosen classifier."""
-        self.pipeline = Pipeline([
-            ("tfidf", TfidfVectorizer()),
-            ("classifier", self.clf)
-        ])
+        self.pipeline = Pipeline(
+            [("tfidf", TfidfVectorizer()), ("classifier", self.clf)]
+        )
 
     def train(self):
         """Method trains the model."""
         self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(
-            self.X, self.y, test_size=self.test_size, stratify=self.y, random_state=self.random_state
+            self.X,
+            self.y,
+            test_size=self.test_size,
+            stratify=self.y,
+            random_state=self.random_state,
         )
         self.pipeline.fit(self.X_train, self.y_train)
         self.set_y_pred(self.pipeline.predict(self.X_test))
 
-
     def count_accuracy(self):
         """Method returns the accuracy of the model."""
-        return accuracy_score(self.get_y_test(), self.get_y_pred()), classification_report(self.get_y_test(), self.get_y_pred())
-
-
-
+        return accuracy_score(
+            self.get_y_test(), self.get_y_pred()
+        ), classification_report(self.get_y_test(), self.get_y_pred())
