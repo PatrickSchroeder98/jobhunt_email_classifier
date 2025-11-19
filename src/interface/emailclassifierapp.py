@@ -39,6 +39,8 @@ class EmailClassifierApp:
             "KNeighborsClassifier": self.classifier.set_clf_knn,
             "VotingClassifier": self.classifier.set_clf_vtc,
             "StackingClassifier": self.classifier.set_clf_stc,
+            "DecisionTreeClassifier": self.classifier.set_clf_dtc,
+            "ExtraTreeClassifier": self.classifier.set_clf_etc,
         }
 
     def set_model1_clf(self, clf):

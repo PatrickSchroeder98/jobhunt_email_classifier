@@ -9,6 +9,7 @@ from sklearn.ensemble import (
 )
 from sklearn.svm import LinearSVC, SVC
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.tree import DecisionTreeClassifier, ExtraTreeClassifier
 
 
 class Classifier:
@@ -40,6 +41,8 @@ class Classifier:
             "LinearSVC": LinearSVC,
             "SVC": SVC,
             "KNeighborsClassifier": KNeighborsClassifier,
+            "DecisionTreeClassifier": DecisionTreeClassifier,
+            "ExtraTreeClassifier": ExtraTreeClassifier,
         }
 
     def set_max_iter(self, max_iter):
@@ -150,7 +153,7 @@ class Classifier:
 
     def set_clf_abc(self):
         """Method that can set classifier as AdaBoostClassifier."""
-        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["AdaBoostClassifier"])
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["AdaBoostClassifier"]())
 
     def set_clf_lsv(self):
         """Method that can set classifier as LinearSVC."""
@@ -162,7 +165,15 @@ class Classifier:
 
     def set_clf_knn(self):
         """Method that can set classifier as KNeighborsClassifier."""
-        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["KNeighborsClassifier"])
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["KNeighborsClassifier"]())
+
+    def set_clf_dtc(self):
+        """Method that can set classifier as DecisionTreeClassifier."""
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["DecisionTreeClassifier"]())
+
+    def set_clf_etc(self):
+        """Method that can set classifier as ExtraTreeClassifier."""
+        self.set_classifier(self.ESTIMATORS_AND_CLASSIFIERS["ExtraTreeClassifier"]())
 
     def set_clf_vtc(self):
         """Method that can set classifier as VotingClassifier."""
