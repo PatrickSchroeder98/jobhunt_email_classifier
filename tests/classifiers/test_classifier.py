@@ -1,5 +1,9 @@
 import unittest
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier, AdaBoostClassifier
+from sklearn.ensemble import (
+    RandomForestClassifier,
+    GradientBoostingClassifier,
+    AdaBoostClassifier,
+)
 from sklearn.linear_model import LogisticRegression, SGDClassifier, RidgeClassifier
 from sklearn.naive_bayes import MultinomialNB, ComplementNB, BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
@@ -46,16 +50,35 @@ class TestClassifier(unittest.TestCase):
         self.assertIsInstance(clf, Classifier)
         self.assertEqual(classifier, clf.classifier)
         self.assertEqual(max_iter, clf.max_iter)
-        self.assertEqual(self.assertIsInstance(vc_clf_1, LogisticRegression), self.assertIsInstance(clf.vc_clf_1, LogisticRegression))
-        self.assertEqual(vc_clf_2, clf.vc_clf_2)
-        self.assertEqual(vc_clf_3, clf.vc_clf_3)
+        self.assertEqual(
+            self.assertIsInstance(vc_clf_1, LogisticRegression),
+            self.assertIsInstance(clf.vc_clf_1, LogisticRegression),
+        )
+        self.assertEqual(
+            self.assertIsInstance(vc_clf_2, MultinomialNB),
+            self.assertIsInstance(clf.vc_clf_2, MultinomialNB),
+        )
+        self.assertEqual(
+            self.assertIsInstance(vc_clf_3, LinearSVC),
+            self.assertIsInstance(clf.vc_clf_3, LinearSVC),
+        )
         self.assertEqual(voting, clf.voting)
-        self.assertEqual(sc_clf_1, clf.sc_clf_1)
-        self.assertEqual(sc_clf_2, clf.sc_clf_2)
-        self.assertEqual(sc_clf_3, clf.sc_clf_3)
+        self.assertEqual(
+            self.assertIsInstance(sc_clf_1, MultinomialNB),
+            self.assertIsInstance(clf.sc_clf_1, MultinomialNB),
+        )
+        self.assertEqual(
+            self.assertIsInstance(sc_clf_2, LinearSVC),
+            self.assertIsInstance(clf.sc_clf_2, LinearSVC),
+        )
+        self.assertEqual(
+            self.assertIsInstance(sc_clf_3, RandomForestClassifier),
+            self.assertIsInstance(clf.sc_clf_3, RandomForestClassifier),
+        )
         self.assertEqual(ESTIMATORS_AND_CLASSIFIERS, clf.ESTIMATORS_AND_CLASSIFIERS)
 
         del clf
+
 
 if __name__ == "__main__":
     unittest.main()

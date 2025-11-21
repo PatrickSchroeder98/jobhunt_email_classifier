@@ -7,6 +7,7 @@ from src.exceptions.exceptions import (
     VotingOptionForVotingClassifierError,
     VotingClassifierNotSupported,
     EstimatorOptionError,
+    StackingClassifierNotSupported,
 )
 
 
@@ -158,6 +159,25 @@ class TestExceptions(unittest.TestCase):
         """Method to test EstimatorOptionError Exception get_code method."""
         e = EstimatorOptionError()
         self.assertEqual(e.get_code(), "ESTIMATOR_NOT_FOUND_007")
+        del e
+
+    def test_StackingClassifierNotSupported_init(self):
+        """Method to test StackingClassifierNotSupported Exception initialization."""
+        e = StackingClassifierNotSupported()
+        self.assertEqual(e.message, "StackingClassifier is not supported in this environment.")
+        self.assertEqual(e.code, "STACKING_CLASSIFIER_NOT_SUPPORTED_006")
+        del e
+
+    def test_StackingClassifierNotSupported_get_message(self):
+        """Method to test StackingClassifierNotSupported Exception get_message method."""
+        e = StackingClassifierNotSupported()
+        self.assertEqual(e.get_message(), "StackingClassifier is not supported in this environment.")
+        del e
+
+    def test_StackingClassifierNotSupported_get_code(self):
+        """Method to test StackingClassifierNotSupported Exception get_code method."""
+        e = StackingClassifierNotSupported()
+        self.assertEqual(e.get_code(), "STACKING_CLASSIFIER_NOT_SUPPORTED_006")
         del e
 
 
