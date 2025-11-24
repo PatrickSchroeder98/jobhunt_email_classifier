@@ -79,6 +79,61 @@ class TestClassifier(unittest.TestCase):
 
         del clf
 
+    def test_set_max_iter(self):
+        """Method tests the set_max_iter method of the class."""
+        clf = Classifier()
+        clf.set_max_iter(100)
+        self.assertEqual(100, clf.max_iter)
+        del clf
+
+    def test_get_max_iter(self):
+        """Method tests the get_max_iter method of the class."""
+        clf = Classifier()
+        clf.max_iter = 150
+        self.assertEqual(150, clf.get_max_iter())
+        del clf
+
+    def test_set_vc_clf_1(self):
+        """Method tests the set_vc_clf_1 method of the class."""
+        clf = Classifier()
+        clf.set_vc_clf_1("estimator1")
+        self.assertEqual("estimator1", clf.vc_clf_1)
+        del clf
+
+    def test_get_vc_clf_1(self):
+        """Method tests the get_vc_clf_1 method of the class."""
+        clf = Classifier()
+        clf.vc_clf_1 = "estimator1"
+        self.assertEqual("estimator1", clf.get_vc_clf_1())
+        del clf
+
+    def test_set_vc_clf_2(self):
+        """Method tests the set_vc_clf_2 method of the class."""
+        clf = Classifier()
+        clf.set_vc_clf_2("estimator2")
+        self.assertEqual("estimator2", clf.vc_clf_2)
+        del clf
+
+    def test_get_vc_clf_2(self):
+        """Method tests the get_vc_clf_2 method of the class."""
+        clf = Classifier()
+        clf.vc_clf_2 = "estimator2"
+        self.assertEqual("estimator2", clf.get_vc_clf_2())
+        del clf
+
+    def test_set_vc_clf_3(self):
+        """Method tests the set_vc_clf_3 method of the class."""
+        clf = Classifier()
+        clf.set_vc_clf_3("estimator3")
+        self.assertEqual("estimator3", clf.vc_clf_3)
+        del clf
+
+    def test_get_vc_clf_3(self):
+        """Method tests the get_vc_clf_2 method of the class."""
+        clf = Classifier()
+        clf.vc_clf_3 = "estimator3"
+        self.assertEqual("estimator3", clf.get_vc_clf_3())
+        del clf
 
 if __name__ == "__main__":
     unittest.main()
