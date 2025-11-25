@@ -135,5 +135,73 @@ class TestClassifier(unittest.TestCase):
         self.assertEqual("estimator3", clf.get_vc_clf_3())
         del clf
 
+    def test_set_voting_hard(self):
+        """Method tests the set_voting_hard method of the class."""
+        clf = Classifier()
+        clf.set_voting_hard()
+        self.assertEqual("hard", clf.voting)
+        del clf
+
+    def test_set_voting_soft(self):
+        """Method tests the set_voting_soft method of the class."""
+        clf = Classifier()
+        clf.set_voting_soft()
+        self.assertEqual("soft", clf.voting)
+        del clf
+
+    def test_set_sc_clf_1(self):
+        """Method tests the set_sc_clf_1 method of the class."""
+        clf = Classifier()
+        clf.set_sc_clf_1("estimator1")
+        self.assertEqual("estimator1", clf.sc_clf_1)
+        del clf
+
+    def test_get_sc_clf_1(self):
+        """Method tests the get_sc_clf_1 method of the class."""
+        clf = Classifier()
+        clf.sc_clf_1 = "estimator1"
+        self.assertEqual("estimator1", clf.get_sc_clf_1())
+        del clf
+
+    def test_set_sc_clf_2(self):
+        """Method tests the set_sc_clf_2 method of the class."""
+        clf = Classifier()
+        clf.set_sc_clf_2("estimator2")
+        self.assertEqual("estimator2", clf.sc_clf_2)
+        del clf
+
+    def test_get_sc_clf_2(self):
+        """Method tests the get_sc_clf_2 method of the class."""
+        clf = Classifier()
+        clf.sc_clf_2 = "estimator2"
+        self.assertEqual("estimator2", clf.get_sc_clf_2())
+        del clf
+
+    def test_set_sc_clf_3(self):
+        """Method tests the set_sc_clf_3 method of the class."""
+        clf = Classifier()
+        clf.set_sc_clf_3("estimator3")
+        self.assertEqual("estimator3", clf.sc_clf_3)
+        del clf
+
+    def test_get_sc_clf_3(self):
+        """Method tests the get_sc_clf_3 method of the class."""
+        clf = Classifier()
+        clf.sc_clf_3 = "estimator3"
+        self.assertEqual("estimator3", clf.get_sc_clf_3())
+        del clf
+
+    def test_set_classifier(self):
+        """Method tests the set_classifier method of the class."""
+        clf = Classifier()
+        clf.set_classifier("classifier")
+        self.assertEqual("classifier", clf.classifier)
+
+    def test_get_classifier(self):
+        """Method tests the get_classifier method of the class."""
+        clf = Classifier()
+        clf.classifier = "classifier"
+        self.assertEqual("classifier", clf.get_classifier())
+
 if __name__ == "__main__":
     unittest.main()
