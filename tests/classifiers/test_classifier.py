@@ -196,12 +196,91 @@ class TestClassifier(unittest.TestCase):
         clf = Classifier()
         clf.set_classifier("classifier")
         self.assertEqual("classifier", clf.classifier)
+        del clf
 
     def test_get_classifier(self):
         """Method tests the get_classifier method of the class."""
         clf = Classifier()
         clf.classifier = "classifier"
         self.assertEqual("classifier", clf.get_classifier())
+        del clf
+
+    def test_set_clf_nb(self):
+        """Method tests the set_clf_nb method of the class."""
+        clf = Classifier()
+        classifier = MultinomialNB()
+        clf.set_clf_nb()
+        self.assertEqual(
+            self.assertIsInstance(classifier, MultinomialNB),
+            self.assertIsInstance(clf.classifier, MultinomialNB),
+        )
+        del clf
+
+    def test_set_clf_cnb(self):
+        """Method tests the set_clf_cnb method of the class."""
+        clf = Classifier()
+        classifier = ComplementNB()
+        clf.set_clf_cnb()
+        self.assertEqual(
+            self.assertIsInstance(classifier, ComplementNB),
+            self.assertIsInstance(clf.classifier, ComplementNB),
+        )
+        del clf
+
+    def test_set_clf_bnb(self):
+        """Method tests the set_clf_bnb method of the class."""
+        clf = Classifier()
+        classifier = BernoulliNB()
+        clf.set_clf_bnb()
+        self.assertEqual(
+            self.assertIsInstance(classifier, BernoulliNB),
+            self.assertIsInstance(clf.classifier, BernoulliNB),
+        )
+        del clf
+
+    def test_set_clf_lr(self):
+        """Method tests the set_clf_lr method of the class."""
+        clf = Classifier()
+        classifier = LogisticRegression()
+        clf.set_clf_lr()
+        self.assertEqual(
+            self.assertIsInstance(classifier, LogisticRegression),
+            self.assertIsInstance(clf.classifier, LogisticRegression),
+        )
+        del clf
+
+    def test_set_clf_sgd(self):
+        """Method tests the set_clf_sgd method of the class."""
+        clf = Classifier()
+        classifier = SGDClassifier()
+        clf.set_clf_sgd()
+        self.assertEqual(
+            self.assertIsInstance(classifier, SGDClassifier),
+            self.assertIsInstance(clf.classifier, SGDClassifier),
+        )
+        del clf
+
+    def test_set_clf_rdg(self):
+        """Method tests the set_clf_rdg method of the class."""
+        clf = Classifier()
+        classifier = RidgeClassifier()
+        clf.set_clf_rdg()
+        self.assertEqual(
+            self.assertIsInstance(classifier, RidgeClassifier),
+            self.assertIsInstance(clf.classifier, RidgeClassifier),
+        )
+        del clf
+
+    def test_set_clf_rfc(self):
+        """Method tests the set_clf_rfc method of the class."""
+        clf = Classifier()
+        classifier = RandomForestClassifier()
+        clf.set_clf_rfc()
+        self.assertEqual(
+            self.assertIsInstance(classifier, RandomForestClassifier),
+            self.assertIsInstance(clf.classifier, RandomForestClassifier),
+        )
+        del clf
 
 if __name__ == "__main__":
     unittest.main()
