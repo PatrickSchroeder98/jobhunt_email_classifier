@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch, MagicMock
 from src.classifiers.classifier import Classifier
 from src.data_module.dataloader import DataLoader
 from src.interface.emailclassifierapp import EmailClassifierApp
@@ -67,14 +68,66 @@ class TestEmailClassifierApp(unittest.TestCase):
             self.assertIsNone(multiclassifier_model),
             self.assertIsNone(app.multiclassifier_model),
         )
+        del app
 
     def test_set_model1_clf(self):
-        """Method tests the set_clf_vtc method of the class."""
+        """Method tests the set_model1_clf method of the class."""
         app = EmailClassifierApp()
         output = app.set_model1_clf("ExampleClf")
         self.assertEqual(app.model1.clf, "ExampleClf")
         self.assertIsInstance(output, Model)
+        del app
 
+    def test_set_model2_clf(self):
+        """Method tests the set_model2_clf method of the class."""
+        app = EmailClassifierApp()
+        output = app.set_model2_clf("ExampleClf")
+        self.assertEqual(app.model2.clf, "ExampleClf")
+        self.assertIsInstance(output, Model)
+        del app
+
+    def test_set_model3_clf(self):
+        """Method tests the set_model3_clf method of the class."""
+        app = EmailClassifierApp()
+        output = app.set_model3_clf("ExampleClf")
+        self.assertEqual(app.model3.clf, "ExampleClf")
+        self.assertIsInstance(output, Model)
+        del app
+
+    def test_set_multiclassifier_model_clf(self):
+        """Method tests the set_multiclassifier_model_clf method of the class."""
+        app = EmailClassifierApp()
+        output = app.set_multiclassifier_model_clf("ExampleClf")
+        self.assertEqual(app.multiclassifier_model.clf, "ExampleClf")
+        self.assertIsInstance(output, Model)
+        del app
+
+    def test_load_data_csv_exception(self):
+        """Method tests the load_data_csv method of the class, in the environment that returns an exception."""
+        app = EmailClassifierApp()
+        result = app.load_data_csv("./nonexistentpath/test.csv")
+        self.assertIsNone(result)
+        del app
+
+    def test_load_data_csv_success(self):
+        """Test that load_data_csv returns a DataFrame when given a valid path."""
+
+        app = EmailClassifierApp()
+        fake_path = "fake/path/to/data.csv"
+        fake_df = MagicMock()
+
+        with patch.object(app.data_loader, "set_path") as mock_set_path, \
+                patch.object(app.data_loader, "load_data_csv", return_value=fake_df) as mock_load:
+            result = app.load_data_csv(fake_path)
+
+            # Ensure set_path() was called correctly
+            mock_set_path.assert_called_once_with(fake_path)
+
+            # Ensure data_loader.load_data_csv() was called
+            mock_load.assert_called_once()
+
+            # Ensure returned DF is exactly what mocked loader returned
+            self.assertIs(result, fake_df)
 
 if __name__ == "__main__":
     unittest.main()
