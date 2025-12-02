@@ -110,7 +110,7 @@ class TestEmailClassifierApp(unittest.TestCase):
         del app
 
     def test_load_data_csv_success(self):
-        """Test that load_data_csv returns a DataFrame when given a valid path."""
+        """Test that checks if load_data_csv returns a DataFrame when given a valid path."""
 
         app = EmailClassifierApp()
         fake_path = "fake/path/to/data.csv"
@@ -120,14 +120,50 @@ class TestEmailClassifierApp(unittest.TestCase):
                 patch.object(app.data_loader, "load_data_csv", return_value=fake_df) as mock_load:
             result = app.load_data_csv(fake_path)
 
-            # Ensure set_path() was called correctly
+            # Ensures set_path() was called correctly
             mock_set_path.assert_called_once_with(fake_path)
 
-            # Ensure data_loader.load_data_csv() was called
+            # Ensures data_loader.load_data_csv() was called
             mock_load.assert_called_once()
 
-            # Ensure returned DF is exactly what mocked loader returned
+            # Ensures returned DF is exactly what mocked loader returned
             self.assertIs(result, fake_df)
+        del app
+
+    def test_classifier_option_check_true(self):
+        """Method tests the classifier_option_check method of the class when it returns true."""
+        app = EmailClassifierApp()
+        option = "Example1"
+        const = {"Example1": "Example1", "Example2": "Example2"}
+        result = app.classifier_option_check(option, const)
+        self.assertTrue(result)
+        del app
+
+    def test_classifier_option_check_false(self):
+        """Method tests the classifier_option_check method of the class when it returns false."""
+        app = EmailClassifierApp()
+        option = "Example3"
+        const = {"Example1": "Example1", "Example2": "Example2"}
+        result = app.classifier_option_check(option, const)
+        self.assertFalse(result)
+        del app
+
+    def test_train_3_stage_pipelines_invalid_classifier(self):
+        """Test ClassifierOptionError branch."""
+
+        app = EmailClassifierApp()
+
+        with patch.object(app, "load_data_csv", return_value=MagicMock()), \
+                patch.object(app, "classifier_option_check", return_value=False):
+            result = app.train_3_stage_pipelines(
+                classifier_option_1="BadClf",
+            )
+
+            # Models set to None
+            self.assertIsNone(app.model1)
+            self.assertIsNone(app.model2)
+            self.assertIsNone(app.model3)
+            self.assertIsNone(result)
 
 if __name__ == "__main__":
     unittest.main()
