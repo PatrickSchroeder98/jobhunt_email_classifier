@@ -192,5 +192,31 @@ class TestEmailClassifierApp(unittest.TestCase):
             # MultinomialNB should be called as fallback 3×
             self.assertEqual(mock_clf_dict["MultinomialNB"].call_count, 3)
 
+    def test_train_3_stage_stacking_classifier_not_supported(self):
+        """Method tests the train_3_stage_pipelines method of the class when the provided classifier is an unsupported StackingClassifier."""
+
+        app = EmailClassifierApp()
+
+        fake_df = MagicMock()
+        fake_model = MagicMock()
+
+        app.set_model1_clf = MagicMock(return_value=fake_model)
+        app.set_model2_clf = MagicMock(return_value=fake_model)
+        app.set_model3_clf = MagicMock(return_value=fake_model)
+
+        app.classifier = MagicMock()
+        app.classifier.get_classifier = MagicMock(return_value="FAKE_CLF")
+
+        with patch.object(app, "load_data_csv", return_value=fake_df), \
+                patch.object(app, "classifier_option_check", return_value=True), \
+                patch.object(app, "CLASSIFIERS", {"MultinomialNB": MagicMock()}) as mock_clf_dict:
+            app.train_3_stage_pipelines(
+                classifier_option_1="StackingClassifier",
+                classifier_option_2="StackingClassifier",
+                classifier_option_3="StackingClassifier",
+            )
+
+            self.assertEqual(mock_clf_dict["MultinomialNB"].call_count, 3)
+
 if __name__ == "__main__":
     unittest.main()
