@@ -2,7 +2,7 @@ import unittest
 from sklearn.ensemble import (
     RandomForestClassifier,
     GradientBoostingClassifier,
-    AdaBoostClassifier,
+    AdaBoostClassifier, VotingClassifier, StackingClassifier,
 )
 from sklearn.linear_model import LogisticRegression, SGDClassifier, RidgeClassifier
 from sklearn.naive_bayes import MultinomialNB, ComplementNB, BernoulliNB
@@ -281,6 +281,119 @@ class TestClassifier(unittest.TestCase):
             self.assertIsInstance(clf.classifier, RandomForestClassifier),
         )
         del clf
+
+    def test_set_clf_gbc(self):
+        """Method tests the set_clf_gbc method of the class."""
+        clf = Classifier()
+        classifier = GradientBoostingClassifier()
+        clf.set_clf_gbc()
+        self.assertEqual(
+            self.assertIsInstance(classifier, GradientBoostingClassifier),
+            self.assertIsInstance(clf.classifier, GradientBoostingClassifier),
+        )
+        del clf
+
+    def test_set_clf_abc(self):
+        """Method tests the set_clf_abc method of the class."""
+        clf = Classifier()
+        classifier = AdaBoostClassifier()
+        clf.set_clf_abc()
+        self.assertEqual(
+            self.assertIsInstance(classifier, AdaBoostClassifier),
+            self.assertIsInstance(clf.classifier, AdaBoostClassifier),
+        )
+        del clf
+
+    def test_set_clf_lsv(self):
+        """Method tests the set_clf_lsv method of the class."""
+        clf = Classifier()
+        classifier = LinearSVC()
+        clf.set_clf_lsv()
+        self.assertEqual(
+            self.assertIsInstance(classifier, LinearSVC),
+            self.assertIsInstance(clf.classifier, LinearSVC),
+        )
+        del clf
+
+    def test_set_clf_svc(self):
+        """Method tests the set_clf_svc method of the class."""
+        clf = Classifier()
+        classifier = SVC()
+        clf.set_clf_svc()
+        self.assertEqual(
+            self.assertIsInstance(classifier, SVC),
+            self.assertIsInstance(clf.classifier, SVC),
+        )
+        del clf
+
+    def test_set_clf_knn(self):
+        """Method tests the set_clf_knn method of the class."""
+        clf = Classifier()
+        classifier = KNeighborsClassifier()
+        clf.set_clf_knn()
+        self.assertEqual(
+            self.assertIsInstance(classifier, KNeighborsClassifier),
+            self.assertIsInstance(clf.classifier, KNeighborsClassifier),
+        )
+        del clf
+
+    def test_set_clf_dtc(self):
+        """Method tests the set_clf_dtc method of the class."""
+        clf = Classifier()
+        classifier = DecisionTreeClassifier()
+        clf.set_clf_dtc()
+        self.assertEqual(
+            self.assertIsInstance(classifier, DecisionTreeClassifier),
+            self.assertIsInstance(clf.classifier, DecisionTreeClassifier),
+        )
+        del clf
+
+    def test_set_clf_etc(self):
+        """Method tests the set_clf_etc method of the class."""
+        clf = Classifier()
+        classifier = ExtraTreeClassifier()
+        clf.set_clf_etc()
+        self.assertEqual(
+            self.assertIsInstance(classifier, ExtraTreeClassifier),
+            self.assertIsInstance(clf.classifier, ExtraTreeClassifier),
+        )
+        del clf
+
+    def test_set_clf_vtc(self):
+        """Method tests the set_clf_vtc method of the class."""
+        clf = Classifier()
+        classifier = VotingClassifier(
+            estimators=[
+                ("1", LogisticRegression(max_iter=200)),
+                ("2", MultinomialNB()),
+                ("3", LinearSVC()),
+            ],
+            voting="hard",
+        )
+        clf.set_clf_vtc()
+        self.assertEqual(
+            self.assertIsInstance(classifier, VotingClassifier),
+            self.assertIsInstance(clf.classifier, VotingClassifier),
+        )
+        del clf
+
+    def test_set_clf_stc(self):
+        """Method tests the set_clf_stc method of the class."""
+        clf = Classifier()
+        classifier = StackingClassifier(
+            estimators=[
+                ("1", MultinomialNB()),
+                ("2", LinearSVC()),
+                ("3", RandomForestClassifier()),
+            ]
+        )
+        clf.set_clf_stc()
+        self.assertEqual(
+            self.assertIsInstance(classifier, StackingClassifier),
+            self.assertIsInstance(clf.classifier, StackingClassifier),
+        )
+        del clf
+
 
 if __name__ == "__main__":
     unittest.main()
