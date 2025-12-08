@@ -218,5 +218,56 @@ class TestEmailClassifierApp(unittest.TestCase):
 
             self.assertEqual(mock_clf_dict["MultinomialNB"].call_count, 3)
 
+    def test_train_3_stage_pipelines_success(self):
+        """Method tests the train_3_stage_pipelines method of the class."""
+
+        app = EmailClassifierApp()
+
+        # Fake dataframe with required columns
+        fake_df = {
+            "email_text": ["text1", "text2"],
+            "related_to_jobhunt": [1, 0],
+            "is_confirmation": [0, 1],
+            "is_invitation": [1, 0],
+        }
+        fake_df = MagicMock()
+        fake_df.__getitem__.side_effect = lambda key: [1, 0]
+
+        # Fake pipeline model
+        fake_model = MagicMock()
+        fake_model.build_pipeline = MagicMock()
+        fake_model.set_X = MagicMock()
+        fake_model.set_y = MagicMock()
+        fake_model.train = MagicMock()
+
+        # Mock setter functions set_model1_clf etc.
+        app.set_model1_clf = MagicMock(return_value=fake_model)
+        app.set_model2_clf = MagicMock(return_value=fake_model)
+        app.set_model3_clf = MagicMock(return_value=fake_model)
+
+        # Fake classifier setter
+        app.classifier = MagicMock()
+        app.classifier.get_classifier = MagicMock(return_value="FAKE_CLF")
+
+        with patch.object(app, "load_data_csv", return_value=fake_df), \
+                patch.object(app, "classifier_option_check", return_value=True), \
+                patch.object(app, "CLASSIFIERS", {"MultinomialNB": MagicMock()}):
+            app.train_3_stage_pipelines(
+                path1="p1",
+                path2="p2",
+                path3="p3",
+            )
+
+            # 3 calls to load_data_csv
+            self.assertEqual(app.load_data_csv.call_count, 3)
+
+            # 3 classifier setters called
+            app.set_model1_clf.assert_called_once()
+            app.set_model2_clf.assert_called_once()
+            app.set_model3_clf.assert_called_once()
+
+            # Check training was triggered 3 times
+            self.assertEqual(fake_model.train.call_count, 3)
+
 if __name__ == "__main__":
     unittest.main()
