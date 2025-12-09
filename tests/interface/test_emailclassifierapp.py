@@ -269,5 +269,52 @@ class TestEmailClassifierApp(unittest.TestCase):
             # Check training was triggered 3 times
             self.assertEqual(fake_model.train.call_count, 3)
 
+    def test_view_3_stage_pipelines_accuracy_model_not_found(self):
+        """Method tests if view_3_stage_pipelines_accuracy returns None when any model is missing."""
+
+        app = EmailClassifierApp()
+
+        # Case: model1 is None → triggers ModelNotFound
+        app.model1 = None
+        app.model2 = MagicMock()
+        app.model3 = MagicMock()
+
+        result = app.view_3_stage_pipelines_accuracy()
+
+        self.assertIsNone(result)
+
+    def test_view_3_stage_pipelines_accuracy_success(self):
+        """Method tests the success route for view_3_stage_pipelines_accuracy where accuracy of all 3 models is displayed."""
+
+        app = EmailClassifierApp()
+
+        # Fake accuracy values for count_accuracy()
+        fake_accuracy = (0.85, 0.90)
+
+        # Create three fake model objects
+        model1 = MagicMock()
+        model2 = MagicMock()
+        model3 = MagicMock()
+
+        model1.count_accuracy.return_value = fake_accuracy
+        model2.count_accuracy.return_value = fake_accuracy
+        model3.count_accuracy.return_value = fake_accuracy
+
+        app.model1 = model1
+        app.model2 = model2
+        app.model3 = model3
+
+        # Patch print to avoid console output during tests
+        with patch("builtins.print"):
+            result = app.view_3_stage_pipelines_accuracy()
+
+        # Ensure accuracy was computed for each model
+        model1.count_accuracy.assert_called_once()
+        model2.count_accuracy.assert_called_once()
+        model3.count_accuracy.assert_called_once()
+
+        # Method does not return accuracy, only prints → should be None
+        self.assertIsNone(result)
+
 if __name__ == "__main__":
     unittest.main()
