@@ -316,5 +316,76 @@ class TestEmailClassifierApp(unittest.TestCase):
         # Method does not return accuracy, only prints → should be None
         self.assertIsNone(result)
 
+    def test_classify_3_stage_model1_not_found(self):
+        """Method tests the classify_emails_3_stage_pipelines when model1 is missing."""
+        app = EmailClassifierApp()
+
+        app.model1 = None  # missing → triggers exception
+        app.model2 = MagicMock()
+        app.model3 = MagicMock()
+
+        result = app.classify_emails_3_stage_pipelines("test email")
+        self.assertIsNone(result)
+
+    def test_classify_3_stage_model2_not_found(self):
+        """Method tests the classify_emails_3_stage_pipelines when model2 is missing."""
+        app = EmailClassifierApp()
+
+        app.model1 = MagicMock()
+        app.model2 = None
+        app.model3 = MagicMock()
+
+        result = app.classify_emails_3_stage_pipelines("test email")
+        self.assertIsNone(result)
+
+    def test_classify_3_stage_model3_not_found(self):
+        """Method tests the classify_emails_3_stage_pipelines when model3 is missing."""
+        app = EmailClassifierApp()
+
+        app.model1 = MagicMock()
+        app.model2 = MagicMock()
+        app.model3 = None
+
+        result = app.classify_emails_3_stage_pipelines("test email")
+        self.assertIsNone(result)
+
+    def test_classify_3_stage_models_not_found(self):
+        """Method tests the classify_emails_3_stage_pipelines when models are missing."""
+        app = EmailClassifierApp()
+
+        app.model1 = None
+        app.model2 = None
+        app.model3 = None
+
+        result = app.classify_emails_3_stage_pipelines("test email")
+        self.assertIsNone(result)
+
+    def test_classify_3_stage_input_error_not_list_or_str(self):
+        """Method tests the classify_emails_3_stage_pipelines when input is not str or list."""
+        app = EmailClassifierApp()
+
+        # All models mocked
+        app.model1 = MagicMock()
+        app.model2 = MagicMock()
+        app.model3 = MagicMock()
+
+        with patch("builtins.print"):
+            result = app.classify_emails_3_stage_pipelines(12345)  # invalid type
+
+        self.assertIsNone(result)
+
+    def test_classify_3_stage_input_error_non_string_inside_list(self):
+        """Method tests the classify_emails_3_stage_pipelines when list contains non-string elements."""
+        app = EmailClassifierApp()
+
+        app.model1 = MagicMock()
+        app.model2 = MagicMock()
+        app.model3 = MagicMock()
+
+        with patch("builtins.print"):
+            result = app.classify_emails_3_stage_pipelines(["ok", 999])  # 999 invalid
+
+        self.assertIsNone(result)
+
 if __name__ == "__main__":
     unittest.main()
