@@ -387,5 +387,85 @@ class TestEmailClassifierApp(unittest.TestCase):
 
         self.assertIsNone(result)
 
+    def test_classify_3_stage_success_all_paths(self):
+        """Method tests the classify_emails_3_stage_pipelines with correct classification logic through all 3 stages using mocks."""
+
+        app = EmailClassifierApp()
+
+        # -------------------------
+        # Mock models and pipelines
+        # -------------------------
+        model1 = MagicMock()
+        model2 = MagicMock()
+        model3 = MagicMock()
+
+        app.model1 = model1
+        app.model2 = model2
+        app.model3 = model3
+
+        # Prepare fake pipelines
+        model1.pipeline = MagicMock()
+        model2.pipeline = MagicMock()
+        model3.pipeline = MagicMock()
+
+        # --------------------
+        # Input emails to test
+        # --------------------
+        emails = [
+            "not job related",  # stage1 → False
+            "confirmation mail",  # stage1 True, stage2 True
+            "invitation mail",  # stage1 True, stage2 False, stage3 True
+            "rejection mail",  # stage1 True, stage2 False, stage3 False
+        ]
+
+        # ---------------------------------------------
+        # Define model predictions for each input email
+        # ---------------------------------------------
+
+        # Stage 1 predictions:
+        # email0 → False
+        # email1 → True
+        # email2 → True
+        # email3 → True
+        model1.pipeline.predict.side_effect = [
+            [False],  # email0
+            [True],  # email1
+            [True],  # email2
+            [True],  # email3
+        ]
+
+        # Stage 2 predictions:
+        # email1 → True
+        # email2 → False
+        # email3 → False
+        model2.pipeline.predict.side_effect = [
+            [True],  # email1
+            [False],  # email2
+            [False],  # email3
+        ]
+
+        # Stage 3 predictions:
+        # email2 → True
+        # email3 → False
+        model3.pipeline.predict.side_effect = [
+            [True],  # email2
+            [False],  # email3
+        ]
+
+        # Run method
+        with patch("builtins.print"):  # suppress prints
+            results = app.classify_emails_3_stage_pipelines(emails)
+
+        expected = [
+            {"email_index": 0, "classification": "Not job-hunt related"},
+            {"email_index": 1, "classification": "Confirmation"},
+            {"email_index": 2, "classification": "Invitation"},
+            {"email_index": 3, "classification": "Rejection"},
+        ]
+
+        self.assertEqual(results, expected)
+
+
+
 if __name__ == "__main__":
     unittest.main()
