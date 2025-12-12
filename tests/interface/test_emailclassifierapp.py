@@ -1,4 +1,5 @@
 import unittest
+import pandas as pd
 from unittest.mock import patch, MagicMock
 from src.classifiers.classifier import Classifier
 from src.data_module.dataloader import DataLoader
@@ -349,6 +350,28 @@ class TestEmailClassifierApp(unittest.TestCase):
         result = app.classify_emails_3_stage_pipelines("test email")
         self.assertIsNone(result)
 
+    def test_classify_3_stage_model1_and_model3_not_found(self):
+        """Method tests the classify_emails_3_stage_pipelines when model1 and model3 are missing."""
+        app = EmailClassifierApp()
+
+        app.model1 = None
+        app.model2 = MagicMock()
+        app.model3 = None
+
+        result = app.classify_emails_3_stage_pipelines("test email")
+        self.assertIsNone(result)
+
+    def test_classify_3_stage_model2_and_model3_not_found(self):
+        """Method tests the classify_emails_3_stage_pipelines when model2 and model3 are missing."""
+        app = EmailClassifierApp()
+
+        app.model1 = MagicMock()
+        app.model2 = None
+        app.model3 = None
+
+        result = app.classify_emails_3_stage_pipelines("test email")
+        self.assertIsNone(result)
+
     def test_classify_3_stage_models_not_found(self):
         """Method tests the classify_emails_3_stage_pipelines when models are missing."""
         app = EmailClassifierApp()
@@ -465,7 +488,33 @@ class TestEmailClassifierApp(unittest.TestCase):
 
         self.assertEqual(results, expected)
 
+    def test_train_multiclassifier_pipeline_invalid_classifier(self):
+        """Method tests if the invalid classifier option triggers ClassifierOptionError route in train_multiclassifier_pipeline method."""
 
+        app = EmailClassifierApp()
+
+        # Mock CSV loading
+        mock_df = pd.DataFrame({
+            "email_text": ["hello"],
+            "email_type": ["Invitation"],
+        })
+        app.load_data_csv = MagicMock(return_value=mock_df)
+
+        # Return False for classifier option check → triggers exception
+        app.classifier_option_check = MagicMock(return_value=False)
+
+        # Track print output but remove noise
+        with patch("builtins.print"):
+            result = app.train_multiclassifier_pipeline(
+                path="fake/path.csv",
+                classifier_option="INVALID",
+            )
+
+        # Should return None
+        self.assertIsNone(result)
+
+        # The multiclassifier model must be set to None
+        self.assertIsNone(app.multiclassifier_model)
 
 if __name__ == "__main__":
     unittest.main()
