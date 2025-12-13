@@ -516,5 +516,76 @@ class TestEmailClassifierApp(unittest.TestCase):
         # The multiclassifier model must be set to None
         self.assertIsNone(app.multiclassifier_model)
 
+    def test_train_multiclassifier_pipeline_success(self):
+        """Method tests the success route of train_multiclassifier_pipeline method."""
+
+        app = EmailClassifierApp()
+
+        # --------------------------
+        # Mock CSV loading
+        # --------------------------
+        mock_df = pd.DataFrame({
+            "email_text": ["hello", "test"],
+            "email_type": ["Invitation", "Rejection"],
+        })
+
+        app.load_data_csv = MagicMock(return_value=mock_df)
+
+        # --------------------------
+        # Mock classifier validation
+        # --------------------------
+        app.classifier_option_check = MagicMock(return_value=True)
+
+        # --------------------------
+        # Mock CLASSIFIERS dict so the classifier setter is a mock
+        # --------------------------
+        mock_setter = MagicMock()
+        app.CLASSIFIERS = {"MultinomialNB": mock_setter}
+
+        # --------------------------
+        # Mock classifier object + its getter
+        # --------------------------
+        app.classifier = MagicMock()
+        app.classifier.get_classifier.return_value = "mock_clf"
+
+        # --------------------------
+        # Mock model and builder
+        # --------------------------
+        mock_model = MagicMock()
+        app.set_multiclassifier_model_clf = MagicMock(return_value=mock_model)
+
+        # Run method
+        app.train_multiclassifier_pipeline(
+            path="fake/path.csv",
+            classifier_option="MultinomialNB",
+            column_name_train="email_type",
+            column_name_main="email_text",
+        )
+
+        # --------------------------
+        # Assertions
+        # --------------------------
+
+        # CSV loaded
+        app.load_data_csv.assert_called_once_with("fake/path.csv")
+
+        # classifier option check was used
+        app.classifier_option_check.assert_called_once_with(
+            "MultinomialNB",
+            app.CLASSIFIERS
+        )
+
+        # Correct classifier setter was called
+        mock_setter.assert_called_once()
+
+        # Model was created using the classifier
+        app.set_multiclassifier_model_clf.assert_called_once_with("mock_clf")
+
+        # Pipeline procedures
+        mock_model.build_pipeline.assert_called_once()
+        mock_model.set_X.assert_called_once_with(mock_df["email_text"])
+        mock_model.set_y.assert_called_once_with(mock_df["email_type"])
+        mock_model.train.assert_called_once()
+
 if __name__ == "__main__":
     unittest.main()
