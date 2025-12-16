@@ -587,5 +587,47 @@ class TestEmailClassifierApp(unittest.TestCase):
         mock_model.set_y.assert_called_once_with(mock_df["email_type"])
         mock_model.train.assert_called_once()
 
+    def test_view_multiclassifier_accuracy_model_missing(self):
+        """Method tests the view_multiclassifier_accuracy method when the multiclassifier model is missing."""
+
+        app = EmailClassifierApp()
+        app.multiclassifier_model = None  # Force missing model
+
+        with patch("builtins.print") as mock_print:
+            result = app.view_multiclassifier_accuracy()
+
+        # Should return None
+        self.assertIsNone(result)
+
+        # Should print error message + code
+        mock_print.assert_any_call("Model has not been initialized.")  # From ModelNotFound()
+        mock_print.assert_any_call("Error code: MODEL_NOT_FOUND_003")  # Expected error code
+
+    def test_view_multiclassifier_accuracy_success(self):
+        """Method tests the view_multiclassifier_accuracy method success route."""
+
+        app = EmailClassifierApp()
+
+        # Mock model
+        mock_model = MagicMock()
+        mock_model.count_accuracy.return_value = (0.85, "classification report here")
+
+        app.multiclassifier_model = mock_model
+
+        with patch("builtins.print") as mock_print:
+            result = app.view_multiclassifier_accuracy()
+
+        # Method does not return anything specific
+        self.assertIsNone(result)
+
+        # Ensure count_accuracy() was called
+        mock_model.count_accuracy.assert_called_once()
+
+        # Ensure prints occurred in correct order
+        mock_print.assert_any_call("Multiclassifier accuracy: ")
+        mock_print.assert_any_call(0.85)
+        mock_print.assert_any_call("classification report here")
+
+
 if __name__ == "__main__":
     unittest.main()
