@@ -628,6 +628,42 @@ class TestEmailClassifierApp(unittest.TestCase):
         mock_print.assert_any_call(0.85)
         mock_print.assert_any_call("classification report here")
 
+    def test_predict_multiclassifier_model_not_found(self):
+        """Test ModelNotFound route."""
+
+        app = EmailClassifierApp()
+        app.multiclassifier_model = None
+
+        with patch("builtins.print"):
+            result = app.predict_with_multiclassifier("test email")
+
+        self.assertIsNone(result)
+
+    def test_predict_multiclassifier_invalid_input_type(self):
+        """Test InputDataError when input is not str or list."""
+
+        app = EmailClassifierApp()
+
+        app.multiclassifier_model = MagicMock()
+
+        with patch("builtins.print"):
+            result = app.predict_with_multiclassifier(12345)
+
+        self.assertIsNone(result)
+
+    def test_predict_multiclassifier_invalid_list_element(self):
+        """Test InputDataError when list contains non-string."""
+
+        app = EmailClassifierApp()
+
+        app.multiclassifier_model = MagicMock()
+
+        with patch("builtins.print"):
+            result = app.predict_with_multiclassifier(["valid email", 999])
+
+        self.assertIsNone(result)
+
+
 
 if __name__ == "__main__":
     unittest.main()
