@@ -350,6 +350,17 @@ class TestEmailClassifierApp(unittest.TestCase):
         result = app.classify_emails_3_stage_pipelines("test email")
         self.assertIsNone(result)
 
+    def test_classify_3_stage_model1_and_model2_not_found(self):
+        """Method tests the classify_emails_3_stage_pipelines when model1 and model2 are missing."""
+        app = EmailClassifierApp()
+
+        app.model1 = None
+        app.model2 = None
+        app.model3 = MagicMock()
+
+        result = app.classify_emails_3_stage_pipelines("test email")
+        self.assertIsNone(result)
+
     def test_classify_3_stage_model1_and_model3_not_found(self):
         """Method tests the classify_emails_3_stage_pipelines when model1 and model3 are missing."""
         app = EmailClassifierApp()
@@ -629,7 +640,7 @@ class TestEmailClassifierApp(unittest.TestCase):
         mock_print.assert_any_call("classification report here")
 
     def test_predict_multiclassifier_model_not_found(self):
-        """Test ModelNotFound route."""
+        """Method tests the predict_with_multiclassifier exception route when model is None."""
 
         app = EmailClassifierApp()
         app.multiclassifier_model = None
@@ -640,7 +651,7 @@ class TestEmailClassifierApp(unittest.TestCase):
         self.assertIsNone(result)
 
     def test_predict_multiclassifier_invalid_input_type(self):
-        """Test InputDataError when input is not str or list."""
+        """Method tests the predict_with_multiclassifier exception route when input is invalid."""
 
         app = EmailClassifierApp()
 
@@ -652,7 +663,7 @@ class TestEmailClassifierApp(unittest.TestCase):
         self.assertIsNone(result)
 
     def test_predict_multiclassifier_invalid_list_element(self):
-        """Test InputDataError when list contains non-string."""
+        """Method tests the predict_with_multiclassifier exception route when element of input list is invalid."""
 
         app = EmailClassifierApp()
 
@@ -663,6 +674,46 @@ class TestEmailClassifierApp(unittest.TestCase):
 
         self.assertIsNone(result)
 
+    def test_predict_multiclassifier_success(self):
+        """Method tests the predict_with_multiclassifier success route."""
+
+        app = EmailClassifierApp()
+
+        # --------------------------
+        # Mock model and pipeline
+        # --------------------------
+        mock_model = MagicMock()
+        mock_pipeline = MagicMock()
+        mock_model.pipeline = mock_pipeline
+
+        # Simulate predictions
+        mock_pipeline.predict.side_effect = [
+            ["Invitation"],
+            ["Other"],
+            ["Confirmation"],
+        ]
+
+        app.multiclassifier_model = mock_model
+
+        emails = [
+            "email one",
+            "email two",
+            "email three",
+        ]
+
+        with patch("builtins.print"):
+            results = app.predict_with_multiclassifier(emails)
+
+        expected = [
+            {"email_index": 0, "classification": "Invitation"},
+            {"email_index": 1, "classification": "Other"},
+            {"email_index": 2, "classification": "Confirmation"},
+        ]
+
+        self.assertEqual(results, expected)
+
+        # Ensure pipeline.predict was called for each email
+        self.assertEqual(mock_pipeline.predict.call_count, 3)
 
 
 if __name__ == "__main__":
