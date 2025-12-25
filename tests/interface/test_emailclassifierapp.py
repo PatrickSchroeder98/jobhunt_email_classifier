@@ -715,6 +715,60 @@ class TestEmailClassifierApp(unittest.TestCase):
         # Ensure pipeline.predict was called for each email
         self.assertEqual(mock_pipeline.predict.call_count, 3)
 
+    def test_train_multiclassifier_all_classifier_options(self):
+        """Test training works for all available classifier options."""
+
+        app = EmailClassifierApp()
+
+        # Mock dataset
+        mock_df = pd.DataFrame({
+            "email_text": ["a", "b"],
+            "email_type": ["Invitation", "Rejection"]
+        })
+
+        app.load_data_csv = MagicMock(return_value=mock_df)
+        app.classifier_option_check = MagicMock(return_value=True)
+
+        # Mock model
+        mock_model = MagicMock()
+        app.set_multiclassifier_model_clf = MagicMock(return_value=mock_model)
+
+        # Mock classifier instance
+        app.classifier = MagicMock()
+        app.classifier.get_classifier.return_value = "mock_clf"
+
+        # Prepare fake CLASSIFIERS map
+        fake_classifiers = {}
+        for key in app.CLASSIFIERS.keys():
+            fake_classifiers[key] = MagicMock(name=f"set_{key}")
+
+        app.CLASSIFIERS = fake_classifiers
+
+        # Skip special classifiers here
+        excluded = {"VotingClassifier", "StackingClassifier"}
+
+        for clf_name in app.CLASSIFIERS:
+            if clf_name in excluded:
+                continue
+
+            with self.subTest(classifier=clf_name):
+                app.train_multiclassifier_pipeline(
+                    path="fake.csv",
+                    classifier_option=clf_name
+                )
+
+                # correct setter called
+                app.CLASSIFIERS[clf_name].assert_called_once()
+
+                # model pipeline executed
+                mock_model.build_pipeline.assert_called()
+                mock_model.set_X.assert_called_with(mock_df["email_text"])
+                mock_model.set_y.assert_called_with(mock_df["email_type"])
+                mock_model.train.assert_called()
+
+                # reset mocks for next iteration
+                app.CLASSIFIERS[clf_name].reset_mock()
+                mock_model.reset_mock()
 
 if __name__ == "__main__":
     unittest.main()
