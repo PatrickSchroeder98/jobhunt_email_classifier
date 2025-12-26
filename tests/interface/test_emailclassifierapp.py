@@ -770,5 +770,44 @@ class TestEmailClassifierApp(unittest.TestCase):
                 app.CLASSIFIERS[clf_name].reset_mock()
                 mock_model.reset_mock()
 
+    def test_train_multiclassifier_voting_classifier(self):
+        """VotingClassifier invokes voting parameter setup."""
+
+        app = EmailClassifierApp()
+
+        mock_df = pd.DataFrame({
+            "email_text": ["x"],
+            "email_type": ["Other"]
+        })
+
+        app.load_data_csv = MagicMock(return_value=mock_df)
+        app.classifier_option_check = MagicMock(return_value=True)
+
+        app.classifier = MagicMock()
+        app.classifier.get_classifier.return_value = "mock_clf"
+
+        app.set_voting_classifier_parameters = MagicMock()
+
+        mock_model = MagicMock()
+        app.set_multiclassifier_model_clf = MagicMock(return_value=mock_model)
+
+        app.CLASSIFIERS = {
+            "VotingClassifier": MagicMock()
+        }
+
+        app.train_multiclassifier_pipeline(
+            classifier_option="VotingClassifier",
+            estimator_1="A",
+            estimator_2="B",
+            estimator_3="C",
+            voting_option="soft"
+        )
+
+        app.CLASSIFIERS["VotingClassifier"].assert_called_once()
+        app.set_voting_classifier_parameters.assert_called_once_with(
+            "A", "B", "C", "soft"
+        )
+        mock_model.train.assert_called_once()
+
 if __name__ == "__main__":
     unittest.main()
