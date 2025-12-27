@@ -809,5 +809,43 @@ class TestEmailClassifierApp(unittest.TestCase):
         )
         mock_model.train.assert_called_once()
 
+    def test_train_multiclassifier_stacking_classifier(self):
+        """StackingClassifier invokes stacking estimator setup."""
+
+        app = EmailClassifierApp()
+
+        mock_df = pd.DataFrame({
+            "email_text": ["x"],
+            "email_type": ["Confirmation"]
+        })
+
+        app.load_data_csv = MagicMock(return_value=mock_df)
+        app.classifier_option_check = MagicMock(return_value=True)
+
+        app.classifier = MagicMock()
+        app.classifier.get_classifier.return_value = "mock_clf"
+
+        app.set_stacking_classifier_estimators = MagicMock()
+
+        mock_model = MagicMock()
+        app.set_multiclassifier_model_clf = MagicMock(return_value=mock_model)
+
+        app.CLASSIFIERS = {
+            "StackingClassifier": MagicMock()
+        }
+
+        app.train_multiclassifier_pipeline(
+            classifier_option="StackingClassifier",
+            estimator_1="A",
+            estimator_2="B",
+            estimator_3="C"
+        )
+
+        app.CLASSIFIERS["StackingClassifier"].assert_called_once()
+        app.set_stacking_classifier_estimators.assert_called_once_with(
+            "A", "B", "C"
+        )
+        mock_model.train.assert_called_once()
+
 if __name__ == "__main__":
     unittest.main()
