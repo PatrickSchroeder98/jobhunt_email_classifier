@@ -847,5 +847,92 @@ class TestEmailClassifierApp(unittest.TestCase):
         )
         mock_model.train.assert_called_once()
 
+    def test_train_3_stage_pipelines_all_supported_classifiers(self):
+        """Method that tests all possible supported classifiers usage for 3 stage pipelines training."""
+
+        app = EmailClassifierApp()
+
+        # --------------------------
+        # Mock dataset
+        # --------------------------
+        mock_df = pd.DataFrame({
+            "email_text": ["a", "b"],
+            "related_to_jobhunt": [True, False],
+            "is_confirmation": [False, True],
+            "is_invitation": [True, False],
+        })
+
+        app.load_data_csv = MagicMock(return_value=mock_df)
+        app.classifier_option_check = MagicMock(return_value=True)
+
+        # --------------------------
+        # Mock classifier instance
+        # --------------------------
+        app.classifier = MagicMock()
+        app.classifier.get_classifier.return_value = "mock_clf"
+
+        # --------------------------
+        # Mock models
+        # --------------------------
+        model1 = MagicMock()
+        model2 = MagicMock()
+        model3 = MagicMock()
+
+        app.set_model1_clf = MagicMock(return_value=model1)
+        app.set_model2_clf = MagicMock(return_value=model2)
+        app.set_model3_clf = MagicMock(return_value=model3)
+
+        # --------------------------
+        # Prepare CLASSIFIERS map
+        # --------------------------
+        fake_classifiers = {}
+        for name in app.CLASSIFIERS.keys():
+            fake_classifiers[name] = MagicMock(name=f"set_{name}")
+
+        app.CLASSIFIERS = fake_classifiers
+
+        # --------------------------
+        # Exclude unsupported classifiers
+        # --------------------------
+        unsupported = {"VotingClassifier", "StackingClassifier"}
+        supported = [c for c in app.CLASSIFIERS if c not in unsupported]
+
+        # --------------------------
+        # Rotate classifiers across stages
+        # --------------------------
+        for i in range(0, len(supported), 3):
+            clf1 = supported[i]
+            clf2 = supported[(i + 1) % len(supported)]
+            clf3 = supported[(i + 2) % len(supported)]
+
+            with self.subTest(stage1=clf1, stage2=clf2, stage3=clf3):
+
+                app.train_3_stage_pipelines(
+                    path1="fake1.csv",
+                    path2="fake2.csv",
+                    path3="fake3.csv",
+                    classifier_option_1=clf1,
+                    classifier_option_2=clf2,
+                    classifier_option_3=clf3,
+                )
+
+                # Ensure correct classifier setters were called
+                app.CLASSIFIERS[clf1].assert_called_once()
+                app.CLASSIFIERS[clf2].assert_called_once()
+                app.CLASSIFIERS[clf3].assert_called_once()
+
+                # Ensure training executed
+                model1.train.assert_called()
+                model2.train.assert_called()
+                model3.train.assert_called()
+
+                # Reset mocks for next rotation
+                for clf in (clf1, clf2, clf3):
+                    app.CLASSIFIERS[clf].reset_mock()
+
+                model1.reset_mock()
+                model2.reset_mock()
+                model3.reset_mock()
+
 if __name__ == "__main__":
     unittest.main()
