@@ -716,7 +716,7 @@ class TestEmailClassifierApp(unittest.TestCase):
         self.assertEqual(mock_pipeline.predict.call_count, 3)
 
     def test_train_multiclassifier_all_classifier_options(self):
-        """Test training works for all available classifier options."""
+        """Method that tests all possible supported classifiers usage for multiclassifier training."""
 
         app = EmailClassifierApp()
 
@@ -771,7 +771,7 @@ class TestEmailClassifierApp(unittest.TestCase):
                 mock_model.reset_mock()
 
     def test_train_multiclassifier_voting_classifier(self):
-        """VotingClassifier invokes voting parameter setup."""
+        """Method that tests StackingClassifier getting set as multiclassifier model."""
 
         app = EmailClassifierApp()
 
@@ -810,7 +810,7 @@ class TestEmailClassifierApp(unittest.TestCase):
         mock_model.train.assert_called_once()
 
     def test_train_multiclassifier_stacking_classifier(self):
-        """StackingClassifier invokes stacking estimator setup."""
+        """Method that tests StackingClassifier getting set as multiclassifier model."""
 
         app = EmailClassifierApp()
 
@@ -933,6 +933,41 @@ class TestEmailClassifierApp(unittest.TestCase):
                 model1.reset_mock()
                 model2.reset_mock()
                 model3.reset_mock()
+
+    def test_train_3_stage_pipeline_unsupported_classifiers_fallback(self):
+        """Method that tests if Voting and Stacking classifiers are reset to MultinomialNB in 3 stage pipeline setup."""
+
+        app = EmailClassifierApp()
+
+        app.load_data_csv = MagicMock(return_value=pd.DataFrame({
+            "email_text": ["x"],
+            "related_to_jobhunt": [True],
+            "is_confirmation": [False],
+            "is_invitation": [True],
+        }))
+
+        app.classifier_option_check = MagicMock(return_value=True)
+        app.classifier = MagicMock()
+        app.classifier.get_classifier.return_value = "mock_clf"
+
+        app.CLASSIFIERS = {
+            "MultinomialNB": MagicMock(),
+            "VotingClassifier": MagicMock(),
+            "StackingClassifier": MagicMock(),
+        }
+
+        app.set_model1_clf = MagicMock(return_value=MagicMock())
+        app.set_model2_clf = MagicMock(return_value=MagicMock())
+        app.set_model3_clf = MagicMock(return_value=MagicMock())
+
+        with patch("builtins.print"):
+            app.train_3_stage_pipelines(
+                classifier_option_1="VotingClassifier",
+                classifier_option_2="StackingClassifier",
+                classifier_option_3="VotingClassifier",
+            )
+
+        app.CLASSIFIERS["MultinomialNB"].assert_called()
 
 if __name__ == "__main__":
     unittest.main()
