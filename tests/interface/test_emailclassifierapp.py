@@ -969,5 +969,29 @@ class TestEmailClassifierApp(unittest.TestCase):
 
         app.CLASSIFIERS["MultinomialNB"].assert_called()
 
+    def test_set_voting_classifier_parameters_invalid_voting_option(self):
+        """Method that tests set_voting_classifier_parameters method exeption route when voting option is invalid."""
+        app = EmailClassifierApp()
+
+        app.classifier = MagicMock()
+        app.classifier_option_check = MagicMock(return_value=True)
+
+        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
+            "MultinomialNB": MagicMock()
+        }
+
+        result = app.set_voting_classifier_parameters(
+            estimator_1="MultinomialNB",
+            estimator_2="MultinomialNB",
+            estimator_3="MultinomialNB",
+            voting_option="invalid_option",
+        )
+
+        self.assertIsNone(result)
+
+        app.classifier.set_voting_hard.assert_not_called()
+        app.classifier.set_voting_soft.assert_not_called()
+        app.classifier.set_clf_vtc.assert_not_called()
+
 if __name__ == "__main__":
     unittest.main()
