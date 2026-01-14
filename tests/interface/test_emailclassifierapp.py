@@ -1254,5 +1254,55 @@ class TestEmailClassifierApp(unittest.TestCase):
         app.classifier.set_vc_clf_3.assert_not_called()
         app.classifier.set_clf_vtc.assert_not_called()
 
+    def test_set_voting_classifier_parameters_success_default_estimators(self):
+        """Method that tests set_voting_classifier_parameters method's success route with default estimators."""
+        app = EmailClassifierApp()
+
+        # --------------------------
+        # Mock classifier
+        # --------------------------
+        app.classifier = MagicMock()
+
+        # --------------------------
+        # Mock estimator registry
+        # --------------------------
+        mock_estimator = MagicMock()
+        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
+            "MultinomialNB": mock_estimator
+        }
+
+        # --------------------------
+        # All estimator checks pass
+        # --------------------------
+        app.classifier_option_check = MagicMock(return_value=True)
+
+        # --------------------------
+        # Run method
+        # --------------------------
+        app.set_voting_classifier_parameters(
+            estimator_1="MultinomialNB",
+            estimator_2="MultinomialNB",
+            estimator_3="MultinomialNB",
+            voting_option="hard",
+        )
+
+        # --------------------------
+        # Assertions
+        # --------------------------
+
+        # Voting mode set
+        app.classifier.set_voting_hard.assert_called_once()
+
+        # Estimators created
+        self.assertEqual(mock_estimator.call_count, 3)
+
+        # Estimators assigned
+        app.classifier.set_vc_clf_1.assert_called_once()
+        app.classifier.set_vc_clf_2.assert_called_once()
+        app.classifier.set_vc_clf_3.assert_called_once()
+
+        # Final classifier built
+        app.classifier.set_clf_vtc.assert_called_once()
+
 if __name__ == "__main__":
     unittest.main()
