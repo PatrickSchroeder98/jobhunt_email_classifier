@@ -1304,5 +1304,84 @@ class TestEmailClassifierApp(unittest.TestCase):
         # Final classifier built
         app.classifier.set_clf_vtc.assert_called_once()
 
+    def test_set_voting_classifier_parameters_all_estimators(self):
+        """Method that tests set_voting_classifier_parameters method's success route with all possible estimators."""
+        app = EmailClassifierApp()
+
+        # --------------------------
+        # Mock classifier
+        # --------------------------
+        app.classifier = MagicMock()
+
+        # --------------------------
+        # Use real estimator names but mock constructors
+        # --------------------------
+        estimator_names = [
+            "MultinomialNB",
+            "LogisticRegression",
+            "ComplementNB",
+            "BernoulliNB",
+            "SGDClassifier",
+            "RidgeClassifier",
+            "RandomForestClassifier",
+            "GradientBoostingClassifier",
+            "AdaBoostClassifier",
+            "LinearSVC",
+            "SVC",
+            "KNeighborsClassifier",
+            "DecisionTreeClassifier",
+            "ExtraTreeClassifier",
+        ]
+
+        # Build mocked registry
+        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
+            name: MagicMock(name=f"{name}_ctor") for name in estimator_names
+        }
+
+        # All estimator options valid
+        app.classifier_option_check = MagicMock(return_value=True)
+
+        # --------------------------
+        # Test both voting options
+        # --------------------------
+        for voting_option in ("hard", "soft"):
+            for estimator in estimator_names:
+
+                # Reset mocks between runs
+                app.classifier.reset_mock()
+                for ctor in app.classifier.ESTIMATORS_AND_CLASSIFIERS.values():
+                    ctor.reset_mock()
+
+                app.set_voting_classifier_parameters(
+                    estimator_1=estimator,
+                    estimator_2=estimator,
+                    estimator_3=estimator,
+                    voting_option=voting_option,
+                )
+
+                # --------------------------
+                # Assertions
+                # --------------------------
+
+                # Correct voting mode
+                if voting_option == "hard":
+                    app.classifier.set_voting_hard.assert_called_once()
+                    app.classifier.set_voting_soft.assert_not_called()
+                else:
+                    app.classifier.set_voting_soft.assert_called_once()
+                    app.classifier.set_voting_hard.assert_not_called()
+
+                # Estimator constructor called 3 times
+                ctor = app.classifier.ESTIMATORS_AND_CLASSIFIERS[estimator]
+                self.assertEqual(ctor.call_count, 3)
+
+                # Estimators assigned
+                app.classifier.set_vc_clf_1.assert_called_once()
+                app.classifier.set_vc_clf_2.assert_called_once()
+                app.classifier.set_vc_clf_3.assert_called_once()
+
+                # VotingClassifier finalized
+                app.classifier.set_clf_vtc.assert_called_once()
+
 if __name__ == "__main__":
     unittest.main()
