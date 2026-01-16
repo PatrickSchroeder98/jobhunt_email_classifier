@@ -1383,5 +1383,24 @@ class TestEmailClassifierApp(unittest.TestCase):
                 # VotingClassifier finalized
                 app.classifier.set_clf_vtc.assert_called_once()
 
+    def test_set_stacking_classifier_estimators_all_none(self):
+        """Method that tests set_stacking_classifier_estimators when all estimators are none."""
+        app = EmailClassifierApp()
+        app.classifier = MagicMock()
+
+        result = app.set_stacking_classifier_estimators(
+            estimator_1=None,
+            estimator_2=None,
+            estimator_3=None,
+        )
+
+        self.assertIsNone(result)
+
+        # No classifier methods should be called
+        app.classifier.set_sc_clf_1.assert_not_called()
+        app.classifier.set_sc_clf_2.assert_not_called()
+        app.classifier.set_sc_clf_3.assert_not_called()
+        app.classifier.set_clf_stc.assert_not_called()
+
 if __name__ == "__main__":
     unittest.main()
