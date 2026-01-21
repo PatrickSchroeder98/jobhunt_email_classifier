@@ -1489,5 +1489,36 @@ class TestEmailClassifierApp(unittest.TestCase):
         app.classifier.set_sc_clf_3.assert_not_called()
         app.classifier.set_clf_stc.assert_not_called()
 
+    def test_set_stacking_classifier_estimators_success_default(self):
+        app = EmailClassifierApp()
+        app.classifier = MagicMock()
+
+        # Mock estimator constructor
+        mock_estimator_ctor = MagicMock(name="MultinomialNB_ctor")
+
+        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
+            "MultinomialNB": mock_estimator_ctor
+        }
+
+        # All estimator checks pass
+        app.classifier_option_check = MagicMock(return_value=True)
+
+        app.set_stacking_classifier_estimators(
+            estimator_1="MultinomialNB",
+            estimator_2="MultinomialNB",
+            estimator_3="MultinomialNB",
+        )
+
+        # Constructor called 3 times
+        self.assertEqual(mock_estimator_ctor.call_count, 3)
+
+        # Estimators assigned
+        app.classifier.set_sc_clf_1.assert_called_once()
+        app.classifier.set_sc_clf_2.assert_called_once()
+        app.classifier.set_sc_clf_3.assert_called_once()
+
+        # Final StackingClassifier creation
+        app.classifier.set_clf_stc.assert_called_once()
+
 if __name__ == "__main__":
     unittest.main()
