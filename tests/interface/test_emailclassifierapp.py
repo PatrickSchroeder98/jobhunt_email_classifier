@@ -1520,5 +1520,68 @@ class TestEmailClassifierApp(unittest.TestCase):
         # Final StackingClassifier creation
         app.classifier.set_clf_stc.assert_called_once()
 
+    def test_set_stacking_classifier_estimators_all_estimators(self):
+        """Method that tests set_stacking_classifier_estimators with all supported estimators."""
+        app = EmailClassifierApp()
+        app.classifier = MagicMock()
+
+        estimator_names = [
+            "MultinomialNB",
+            "LogisticRegression",
+            "ComplementNB",
+            "BernoulliNB",
+            "SGDClassifier",
+            "RidgeClassifier",
+            "RandomForestClassifier",
+            "GradientBoostingClassifier",
+            "AdaBoostClassifier",
+            "LinearSVC",
+            "SVC",
+            "KNeighborsClassifier",
+            "DecisionTreeClassifier",
+            "ExtraTreeClassifier",
+        ]
+
+
+        # Mock estimator constructors
+        estimators_dict = {}
+        for name in estimator_names:
+            estimators_dict[name] = MagicMock(name=f"{name}_ctor")
+
+        app.classifier.ESTIMATORS_AND_CLASSIFIERS = estimators_dict
+
+        # All estimator checks pass
+        app.classifier_option_check = MagicMock(return_value=True)
+
+        # --------------------------
+        # Iterate through estimators
+        # --------------------------
+        for estimator_name in estimator_names:
+            # Reset mocks before each iteration
+            app.classifier.reset_mock()
+            for ctor in estimators_dict.values():
+                ctor.reset_mock()
+
+            app.set_stacking_classifier_estimators(
+                estimator_1=estimator_name,
+                estimator_2=estimator_name,
+                estimator_3=estimator_name,
+            )
+
+            # Constructor should be called 3 times
+            self.assertEqual(
+                estimators_dict[estimator_name].call_count,
+                3,
+                msg=f"Estimator {estimator_name} was not instantiated 3 times",
+            )
+
+            # Estimators assigned
+            app.classifier.set_sc_clf_1.assert_called_once()
+            app.classifier.set_sc_clf_2.assert_called_once()
+            app.classifier.set_sc_clf_3.assert_called_once()
+
+            # Final classifier creation
+            app.classifier.set_clf_stc.assert_called_once()
+
 if __name__ == "__main__":
     unittest.main()
