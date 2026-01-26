@@ -1573,7 +1573,36 @@ class TestEmailClassifierApp(unittest.TestCase):
         app.classifier.set_sc_clf_3.assert_not_called()
         app.classifier.set_clf_stc.assert_not_called()
 
+    def test_set_stacking_classifier_estimators_invalid_estimator_1_2_3(self):
+        """Method that tests set_stacking_classifier_estimators exception route when estimator_1, estimator_2 and estimator_3 is invalid."""
+        app = EmailClassifierApp()
+        app.classifier = MagicMock()
+
+        # Registry with only one valid option
+        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
+            "MultinomialNB": MagicMock()
+        }
+
+        app.classifier_option_check = MagicMock(
+            side_effect=[True, False, True]
+        )
+
+        result = app.set_stacking_classifier_estimators(
+            estimator_1="InvalidEstimator",
+            estimator_2="InvalidEstimator",
+            estimator_3="InvalidEstimator",
+        )
+
+        self.assertIsNone(result)
+
+        # No classifier building should happen
+        app.classifier.set_sc_clf_1.assert_not_called()
+        app.classifier.set_sc_clf_2.assert_not_called()
+        app.classifier.set_sc_clf_3.assert_not_called()
+        app.classifier.set_clf_stc.assert_not_called()
+
     def test_set_stacking_classifier_estimators_success_default(self):
+        """Method that tests set_stacking_classifier_estimators success route with default estimators."""
         app = EmailClassifierApp()
         app.classifier = MagicMock()
 
