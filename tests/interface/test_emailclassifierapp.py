@@ -993,316 +993,111 @@ class TestEmailClassifierApp(unittest.TestCase):
         app.classifier.set_voting_soft.assert_not_called()
         app.classifier.set_clf_vtc.assert_not_called()
 
-    def test_set_voting_classifier_parameters_invalid_estimator_1(self):
-        """Method that tests set_voting_classifier_parameters method exception route when estimator_1 option is invalid."""
+    def test_set_voting_classifier_parameters_invalid_estimators(self):
         app = EmailClassifierApp()
-
         app.classifier = MagicMock()
-        app.classifier_option_check = MagicMock(
-            side_effect=[True, False, True]
-        )
 
+        # Valid estimator registry
         app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
             "MultinomialNB": MagicMock()
         }
 
-        app.set_voting_classifier_parameters(
-            estimator_1="InvalidEstimator",
-            estimator_2="MultinomialNB",
-            estimator_3="MultinomialNB",
-            voting_option="hard",
-        )
+        # All combinations with at least one invalid estimator
+        test_cases = [
+            ("InvalidEstimator", "MultinomialNB", "MultinomialNB"),
+            ("MultinomialNB", "InvalidEstimator", "MultinomialNB"),
+            ("MultinomialNB", "MultinomialNB", "InvalidEstimator"),
+            ("InvalidEstimator", "InvalidEstimator", "MultinomialNB"),
+            ("InvalidEstimator", "MultinomialNB", "InvalidEstimator"),
+            ("MultinomialNB", "InvalidEstimator", "InvalidEstimator"),
+            ("InvalidEstimator", "InvalidEstimator", "InvalidEstimator"),
+        ]
 
-        # Voting mode should be set
-        app.classifier.set_voting_hard.assert_called_once()
+        for est1, est2, est3 in test_cases:
+            with self.subTest(estimator_1=est1, estimator_2=est2, estimator_3=est3):
+                app.classifier.reset_mock()
 
-        # Estimators should NOT be set
-        app.classifier.set_vc_clf_1.assert_not_called()
-        app.classifier.set_vc_clf_2.assert_not_called()
-        app.classifier.set_vc_clf_3.assert_not_called()
-        app.classifier.set_clf_vtc.assert_not_called()
+                # classifier_option_check returns False if estimator is invalid
+                app.classifier_option_check = MagicMock(
+                    side_effect=lambda e, _: e == "MultinomialNB"
+                )
 
-    def test_set_voting_classifier_parameters_invalid_estimator_2(self):
-        """Method that tests set_voting_classifier_parameters method exception route when estimator_2 option is invalid."""
-        app = EmailClassifierApp()
+                voting_options = ["hard", "soft", "Invalid_Option"]
 
-        app.classifier = MagicMock()
-        app.classifier_option_check = MagicMock(
-            side_effect=[True, False, True]
-        )
+                for option in voting_options:
 
-        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
-            "MultinomialNB": MagicMock()
-        }
+                    app.set_voting_classifier_parameters(
+                        estimator_1=est1,
+                        estimator_2=est2,
+                        estimator_3=est3,
+                        voting_option=option,
+                    )
 
-        app.set_voting_classifier_parameters(
-            estimator_1="MultinomialNB",
-            estimator_2="InvalidEstimator",
-            estimator_3="MultinomialNB",
-            voting_option="hard",
-        )
+                    # Voting mode should be set
+                    app.classifier.set_voting_hard.assert_called_once()
 
-        # Voting mode should be set
-        app.classifier.set_voting_hard.assert_called_once()
-
-        # Estimators should NOT be set
-        app.classifier.set_vc_clf_1.assert_not_called()
-        app.classifier.set_vc_clf_2.assert_not_called()
-        app.classifier.set_vc_clf_3.assert_not_called()
-        app.classifier.set_clf_vtc.assert_not_called()
-
-    def test_set_voting_classifier_parameters_invalid_estimator_3(self):
-        """Method that tests set_voting_classifier_parameters method exception route when estimator_3 option is invalid."""
-        app = EmailClassifierApp()
-
-        app.classifier = MagicMock()
-        app.classifier_option_check = MagicMock(
-            side_effect=[True, False, True] 
-        )
-
-        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
-            "MultinomialNB": MagicMock()
-        }
-
-        app.set_voting_classifier_parameters(
-            estimator_1="MultinomialNB",
-            estimator_2="MultinomialNB",
-            estimator_3="InvalidEstimator",
-            voting_option="hard",
-        )
-
-        # Voting mode should be set
-        app.classifier.set_voting_hard.assert_called_once()
-
-        # Estimators should NOT be set
-        app.classifier.set_vc_clf_1.assert_not_called()
-        app.classifier.set_vc_clf_2.assert_not_called()
-        app.classifier.set_vc_clf_3.assert_not_called()
-        app.classifier.set_clf_vtc.assert_not_called()
-
-    def test_set_voting_classifier_parameters_invalid_estimator_1_2(self):
-        """Method that tests set_voting_classifier_parameters method exception route when estimator_1 and estimator_2 options are invalid."""
-        app = EmailClassifierApp()
-
-        app.classifier = MagicMock()
-        app.classifier_option_check = MagicMock(
-            side_effect=[True, False, True]
-        )
-
-        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
-            "MultinomialNB": MagicMock()
-        }
-
-        app.set_voting_classifier_parameters(
-            estimator_1="InvalidEstimator",
-            estimator_2="InvalidEstimator",
-            estimator_3="MultinomialNB",
-            voting_option="hard",
-        )
-
-        # Voting mode should be set
-        app.classifier.set_voting_hard.assert_called_once()
-
-        # Estimators should NOT be set
-        app.classifier.set_vc_clf_1.assert_not_called()
-        app.classifier.set_vc_clf_2.assert_not_called()
-        app.classifier.set_vc_clf_3.assert_not_called()
-        app.classifier.set_clf_vtc.assert_not_called()
-
-    def test_set_voting_classifier_parameters_invalid_estimator_1_3(self):
-        """Method that tests set_voting_classifier_parameters method exception route when estimator_1 and estimator_3 options are invalid."""
-        app = EmailClassifierApp()
-
-        app.classifier = MagicMock()
-        app.classifier_option_check = MagicMock(
-            side_effect=[True, False, True]
-        )
-
-        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
-            "MultinomialNB": MagicMock()
-        }
-
-        app.set_voting_classifier_parameters(
-            estimator_1="InvalidEstimator",
-            estimator_2="MultinomialNB",
-            estimator_3="InvalidEstimator",
-            voting_option="hard",
-        )
-
-        # Voting mode should be set
-        app.classifier.set_voting_hard.assert_called_once()
-
-        # Estimators should NOT be set
-        app.classifier.set_vc_clf_1.assert_not_called()
-        app.classifier.set_vc_clf_2.assert_not_called()
-        app.classifier.set_vc_clf_3.assert_not_called()
-        app.classifier.set_clf_vtc.assert_not_called()
-
-    def test_set_voting_classifier_parameters_invalid_estimator_2_3(self):
-        """Method that tests set_voting_classifier_parameters method exception route when estimator_2 and estimator_3 options are invalid."""
-        app = EmailClassifierApp()
-
-        app.classifier = MagicMock()
-        app.classifier_option_check = MagicMock(
-            side_effect=[True, False, True]
-        )
-
-        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
-            "MultinomialNB": MagicMock()
-        }
-
-        app.set_voting_classifier_parameters(
-            estimator_1="MultinomialNB",
-            estimator_2="InvalidEstimator",
-            estimator_3="InvalidEstimator",
-            voting_option="hard",
-        )
-
-        # Voting mode should be set
-        app.classifier.set_voting_hard.assert_called_once()
-
-        # Estimators should NOT be set
-        app.classifier.set_vc_clf_1.assert_not_called()
-        app.classifier.set_vc_clf_2.assert_not_called()
-        app.classifier.set_vc_clf_3.assert_not_called()
-        app.classifier.set_clf_vtc.assert_not_called()
-
-    def test_set_voting_classifier_parameters_invalid_estimator_1_2_3_h(self):
-        """Method that tests set_voting_classifier_parameters method exception route when estimator_1, estimator_2 and estimator_3 options are invalid."""
-        app = EmailClassifierApp()
-
-        app.classifier = MagicMock()
-        app.classifier_option_check = MagicMock(
-            side_effect=[True, False, True]
-        )
-
-        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
-            "MultinomialNB": MagicMock()
-        }
-
-        app.set_voting_classifier_parameters(
-            estimator_1="InvalidEstimator",
-            estimator_2="InvalidEstimator",
-            estimator_3="InvalidEstimator",
-            voting_option="hard",
-        )
-
-        # Voting mode should be set
-        app.classifier.set_voting_hard.assert_called_once()
-
-        # Estimators should NOT be set
-        app.classifier.set_vc_clf_1.assert_not_called()
-        app.classifier.set_vc_clf_2.assert_not_called()
-        app.classifier.set_vc_clf_3.assert_not_called()
-        app.classifier.set_clf_vtc.assert_not_called()
-
-    def test_set_voting_classifier_parameters_invalid_estimator_1_2_3_s(self):
-        """Method that tests set_voting_classifier_parameters method exception route when estimator_1, estimator_2 and estimator_3 options are invalid, and voting option is soft."""
-        app = EmailClassifierApp()
-
-        app.classifier = MagicMock()
-        app.classifier_option_check = MagicMock(
-            side_effect=[True, False, True]
-        )
-
-        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
-            "MultinomialNB": MagicMock()
-        }
-
-        app.set_voting_classifier_parameters(
-            estimator_1="InvalidEstimator",
-            estimator_2="InvalidEstimator",
-            estimator_3="InvalidEstimator",
-            voting_option="soft",
-        )
-
-        # Voting mode should be set
-        app.classifier.set_voting_soft.assert_called_once()
-
-        # Estimators should NOT be set
-        app.classifier.set_vc_clf_1.assert_not_called()
-        app.classifier.set_vc_clf_2.assert_not_called()
-        app.classifier.set_vc_clf_3.assert_not_called()
-        app.classifier.set_clf_vtc.assert_not_called()
-
-    def test_set_voting_classifier_parameters_invalid_estimator_1_2_3_inv(self):
-        """Method that tests set_voting_classifier_parameters method exception route when estimator_1, estimator_2 and estimator_3 options are invalid, and voting option is invalid as well."""
-        app = EmailClassifierApp()
-
-        app.classifier = MagicMock()
-        app.classifier_option_check = MagicMock(
-            side_effect=[True, False, True]
-        )
-
-        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
-            "MultinomialNB": MagicMock()
-        }
-
-        app.set_voting_classifier_parameters(
-            estimator_1="InvalidEstimator",
-            estimator_2="InvalidEstimator",
-            estimator_3="InvalidEstimator",
-            voting_option="InvalidOption",
-        )
-
-        app.classifier.set_voting_hard.assert_not_called()
-        app.classifier.set_voting_soft.assert_not_called()
-
-        # Estimators should NOT be set
-        app.classifier.set_vc_clf_1.assert_not_called()
-        app.classifier.set_vc_clf_2.assert_not_called()
-        app.classifier.set_vc_clf_3.assert_not_called()
-        app.classifier.set_clf_vtc.assert_not_called()
+                    # Estimators should NOT be set
+                    app.classifier.set_vc_clf_1.assert_not_called()
+                    app.classifier.set_vc_clf_2.assert_not_called()
+                    app.classifier.set_vc_clf_3.assert_not_called()
+                    app.classifier.set_clf_vtc.assert_not_called()
 
     def test_set_voting_classifier_parameters_success_default_estimators(self):
-        """Method that tests set_voting_classifier_parameters method's success route with default estimators."""
+        """Method tests success route with default estimators for both hard and soft voting."""
         app = EmailClassifierApp()
 
-        # --------------------------
-        # Mock classifier
-        # --------------------------
-        app.classifier = MagicMock()
+        for voting_option in ("hard", "soft"):
+            with self.subTest(voting_option=voting_option):
 
-        # --------------------------
-        # Mock estimator registry
-        # --------------------------
-        mock_estimator = MagicMock()
-        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
-            "MultinomialNB": mock_estimator
-        }
+                # --------------------------
+                # Mock classifier
+                # --------------------------
+                app.classifier = MagicMock()
 
-        # --------------------------
-        # All estimator checks pass
-        # --------------------------
-        app.classifier_option_check = MagicMock(return_value=True)
+                # --------------------------
+                # Mock estimator registry
+                # --------------------------
+                mock_estimator = MagicMock()
+                app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
+                    "MultinomialNB": mock_estimator
+                }
 
-        # --------------------------
-        # Run method
-        # --------------------------
-        app.set_voting_classifier_parameters(
-            estimator_1="MultinomialNB",
-            estimator_2="MultinomialNB",
-            estimator_3="MultinomialNB",
-            voting_option="hard",
-        )
+                # --------------------------
+                # All estimator checks pass
+                # --------------------------
+                app.classifier_option_check = MagicMock(return_value=True)
 
-        # --------------------------
-        # Assertions
-        # --------------------------
+                # --------------------------
+                # Run method
+                # --------------------------
+                app.set_voting_classifier_parameters(
+                    estimator_1="MultinomialNB",
+                    estimator_2="MultinomialNB",
+                    estimator_3="MultinomialNB",
+                    voting_option=voting_option,
+                )
 
-        # Voting mode set
-        app.classifier.set_voting_hard.assert_called_once()
+                # --------------------------
+                # Assertions
+                # --------------------------
 
-        # Estimators created
-        self.assertEqual(mock_estimator.call_count, 3)
+                if voting_option == "hard":
+                    app.classifier.set_voting_hard.assert_called_once()
+                    app.classifier.set_voting_soft.assert_not_called()
+                else:
+                    app.classifier.set_voting_soft.assert_called_once()
+                    app.classifier.set_voting_hard.assert_not_called()
 
-        # Estimators assigned
-        app.classifier.set_vc_clf_1.assert_called_once()
-        app.classifier.set_vc_clf_2.assert_called_once()
-        app.classifier.set_vc_clf_3.assert_called_once()
+                # Estimators instantiated
+                self.assertEqual(mock_estimator.call_count, 3)
 
-        # Final classifier built
-        app.classifier.set_clf_vtc.assert_called_once()
+                # Estimators assigned
+                app.classifier.set_vc_clf_1.assert_called_once()
+                app.classifier.set_vc_clf_2.assert_called_once()
+                app.classifier.set_vc_clf_3.assert_called_once()
+
+                # Final classifier built
+                app.classifier.set_clf_vtc.assert_called_once()
 
     def test_set_voting_classifier_parameters_all_estimators(self):
         """Method that tests set_voting_classifier_parameters method's success route with all possible estimators."""
