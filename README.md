@@ -31,8 +31,9 @@ This project focuses on the development of a Natural Language Processing (NLP) b
 * Python programming language
 * Scikit-learn NLP Modules
 * Pandas
-* Black
 * Unittest
+* Black
+* Sphinx
 
 ## Tests  
 The project includes a comprehensive set of tests to ensure that all functionalities are working correctly.  
