@@ -117,8 +117,9 @@ class TestEmailClassifierApp(unittest.TestCase):
         fake_path = "fake/path/to/data.csv"
         fake_df = MagicMock()
 
-        with patch.object(app.data_loader, "set_path") as mock_set_path, \
-                patch.object(app.data_loader, "load_data_csv", return_value=fake_df) as mock_load:
+        with patch.object(app.data_loader, "set_path") as mock_set_path, patch.object(
+            app.data_loader, "load_data_csv", return_value=fake_df
+        ) as mock_load:
             result = app.load_data_csv(fake_path)
 
             # Ensures set_path() was called correctly
@@ -154,8 +155,9 @@ class TestEmailClassifierApp(unittest.TestCase):
 
         app = EmailClassifierApp()
 
-        with patch.object(app, "load_data_csv", return_value=MagicMock()), \
-                patch.object(app, "classifier_option_check", return_value=False):
+        with patch.object(app, "load_data_csv", return_value=MagicMock()), patch.object(
+            app, "classifier_option_check", return_value=False
+        ):
             result = app.train_3_stage_pipelines(
                 classifier_option_1="BadClf",
             )
@@ -167,7 +169,8 @@ class TestEmailClassifierApp(unittest.TestCase):
             self.assertIsNone(result)
 
     def test_train_3_stage_voting_classifier_not_supported(self):
-        """Method tests the train_3_stage_pipelines method of the class when the provided classifier is an unsupported VotingClassifier."""
+        """Method tests the train_3_stage_pipelines method of the class when the provided classifier
+        is an unsupported VotingClassifier."""
 
         app = EmailClassifierApp()
 
@@ -181,9 +184,11 @@ class TestEmailClassifierApp(unittest.TestCase):
         app.classifier = MagicMock()
         app.classifier.get_classifier = MagicMock(return_value="FAKE_CLF")
 
-        with patch.object(app, "load_data_csv", return_value=fake_df), \
-                patch.object(app, "classifier_option_check", return_value=True), \
-                patch.object(app, "CLASSIFIERS", {"MultinomialNB": MagicMock()}) as mock_clf_dict:
+        with patch.object(app, "load_data_csv", return_value=fake_df), patch.object(
+            app, "classifier_option_check", return_value=True
+        ), patch.object(
+            app, "CLASSIFIERS", {"MultinomialNB": MagicMock()}
+        ) as mock_clf_dict:
             app.train_3_stage_pipelines(
                 classifier_option_1="VotingClassifier",
                 classifier_option_2="VotingClassifier",
@@ -194,7 +199,8 @@ class TestEmailClassifierApp(unittest.TestCase):
             self.assertEqual(mock_clf_dict["MultinomialNB"].call_count, 3)
 
     def test_train_3_stage_stacking_classifier_not_supported(self):
-        """Method tests the train_3_stage_pipelines method of the class when the provided classifier is an unsupported StackingClassifier."""
+        """Method tests the train_3_stage_pipelines method of the class when the provided classifier
+        is an unsupported StackingClassifier."""
 
         app = EmailClassifierApp()
 
@@ -208,9 +214,11 @@ class TestEmailClassifierApp(unittest.TestCase):
         app.classifier = MagicMock()
         app.classifier.get_classifier = MagicMock(return_value="FAKE_CLF")
 
-        with patch.object(app, "load_data_csv", return_value=fake_df), \
-                patch.object(app, "classifier_option_check", return_value=True), \
-                patch.object(app, "CLASSIFIERS", {"MultinomialNB": MagicMock()}) as mock_clf_dict:
+        with patch.object(app, "load_data_csv", return_value=fake_df), patch.object(
+            app, "classifier_option_check", return_value=True
+        ), patch.object(
+            app, "CLASSIFIERS", {"MultinomialNB": MagicMock()}
+        ) as mock_clf_dict:
             app.train_3_stage_pipelines(
                 classifier_option_1="StackingClassifier",
                 classifier_option_2="StackingClassifier",
@@ -250,9 +258,9 @@ class TestEmailClassifierApp(unittest.TestCase):
         app.classifier = MagicMock()
         app.classifier.get_classifier = MagicMock(return_value="FAKE_CLF")
 
-        with patch.object(app, "load_data_csv", return_value=fake_df), \
-                patch.object(app, "classifier_option_check", return_value=True), \
-                patch.object(app, "CLASSIFIERS", {"MultinomialNB": MagicMock()}):
+        with patch.object(app, "load_data_csv", return_value=fake_df), patch.object(
+            app, "classifier_option_check", return_value=True
+        ), patch.object(app, "CLASSIFIERS", {"MultinomialNB": MagicMock()}):
             app.train_3_stage_pipelines(
                 path1="p1",
                 path2="p2",
@@ -285,7 +293,8 @@ class TestEmailClassifierApp(unittest.TestCase):
         self.assertIsNone(result)
 
     def test_view_3_stage_pipelines_accuracy_success(self):
-        """Method tests the success route for view_3_stage_pipelines_accuracy where accuracy of all 3 models is displayed."""
+        """Method tests the success route for view_3_stage_pipelines_accuracy where accuracy of
+        all 3 models is displayed."""
 
         app = EmailClassifierApp()
 
@@ -422,7 +431,8 @@ class TestEmailClassifierApp(unittest.TestCase):
         self.assertIsNone(result)
 
     def test_classify_3_stage_success_all_paths(self):
-        """Method tests the classify_emails_3_stage_pipelines with correct classification logic through all 3 stages using mocks."""
+        """Method tests the classify_emails_3_stage_pipelines with correct classification logic through
+        all 3 stages using mocks."""
 
         app = EmailClassifierApp()
 
@@ -500,15 +510,18 @@ class TestEmailClassifierApp(unittest.TestCase):
         self.assertEqual(results, expected)
 
     def test_train_multiclassifier_pipeline_invalid_classifier(self):
-        """Method tests if the invalid classifier option triggers ClassifierOptionError route in train_multiclassifier_pipeline method."""
+        """Method tests if the invalid classifier option triggers ClassifierOptionError route
+        in train_multiclassifier_pipeline method."""
 
         app = EmailClassifierApp()
 
         # Mock CSV loading
-        mock_df = pd.DataFrame({
-            "email_text": ["hello"],
-            "email_type": ["Invitation"],
-        })
+        mock_df = pd.DataFrame(
+            {
+                "email_text": ["hello"],
+                "email_type": ["Invitation"],
+            }
+        )
         app.load_data_csv = MagicMock(return_value=mock_df)
 
         # Return False for classifier option check → triggers exception
@@ -535,10 +548,12 @@ class TestEmailClassifierApp(unittest.TestCase):
         # --------------------------
         # Mock CSV loading
         # --------------------------
-        mock_df = pd.DataFrame({
-            "email_text": ["hello", "test"],
-            "email_type": ["Invitation", "Rejection"],
-        })
+        mock_df = pd.DataFrame(
+            {
+                "email_text": ["hello", "test"],
+                "email_type": ["Invitation", "Rejection"],
+            }
+        )
 
         app.load_data_csv = MagicMock(return_value=mock_df)
 
@@ -582,8 +597,7 @@ class TestEmailClassifierApp(unittest.TestCase):
 
         # classifier option check was used
         app.classifier_option_check.assert_called_once_with(
-            "MultinomialNB",
-            app.CLASSIFIERS
+            "MultinomialNB", app.CLASSIFIERS
         )
 
         # Correct classifier setter was called
@@ -611,8 +625,12 @@ class TestEmailClassifierApp(unittest.TestCase):
         self.assertIsNone(result)
 
         # Should print error message + code
-        mock_print.assert_any_call("Model has not been initialized.")  # From ModelNotFound()
-        mock_print.assert_any_call("Error code: MODEL_NOT_FOUND_003")  # Expected error code
+        mock_print.assert_any_call(
+            "Model has not been initialized."
+        )  # From ModelNotFound()
+        mock_print.assert_any_call(
+            "Error code: MODEL_NOT_FOUND_003"
+        )  # Expected error code
 
     def test_view_multiclassifier_accuracy_success(self):
         """Method tests the view_multiclassifier_accuracy method success route."""
@@ -721,10 +739,9 @@ class TestEmailClassifierApp(unittest.TestCase):
         app = EmailClassifierApp()
 
         # Mock dataset
-        mock_df = pd.DataFrame({
-            "email_text": ["a", "b"],
-            "email_type": ["Invitation", "Rejection"]
-        })
+        mock_df = pd.DataFrame(
+            {"email_text": ["a", "b"], "email_type": ["Invitation", "Rejection"]}
+        )
 
         app.load_data_csv = MagicMock(return_value=mock_df)
         app.classifier_option_check = MagicMock(return_value=True)
@@ -753,8 +770,7 @@ class TestEmailClassifierApp(unittest.TestCase):
 
             with self.subTest(classifier=clf_name):
                 app.train_multiclassifier_pipeline(
-                    path="fake.csv",
-                    classifier_option=clf_name
+                    path="fake.csv", classifier_option=clf_name
                 )
 
                 # correct setter called
@@ -775,10 +791,7 @@ class TestEmailClassifierApp(unittest.TestCase):
 
         app = EmailClassifierApp()
 
-        mock_df = pd.DataFrame({
-            "email_text": ["x"],
-            "email_type": ["Other"]
-        })
+        mock_df = pd.DataFrame({"email_text": ["x"], "email_type": ["Other"]})
 
         app.load_data_csv = MagicMock(return_value=mock_df)
         app.classifier_option_check = MagicMock(return_value=True)
@@ -791,16 +804,14 @@ class TestEmailClassifierApp(unittest.TestCase):
         mock_model = MagicMock()
         app.set_multiclassifier_model_clf = MagicMock(return_value=mock_model)
 
-        app.CLASSIFIERS = {
-            "VotingClassifier": MagicMock()
-        }
+        app.CLASSIFIERS = {"VotingClassifier": MagicMock()}
 
         app.train_multiclassifier_pipeline(
             classifier_option="VotingClassifier",
             estimator_1="A",
             estimator_2="B",
             estimator_3="C",
-            voting_option="soft"
+            voting_option="soft",
         )
 
         app.CLASSIFIERS["VotingClassifier"].assert_called_once()
@@ -814,10 +825,7 @@ class TestEmailClassifierApp(unittest.TestCase):
 
         app = EmailClassifierApp()
 
-        mock_df = pd.DataFrame({
-            "email_text": ["x"],
-            "email_type": ["Confirmation"]
-        })
+        mock_df = pd.DataFrame({"email_text": ["x"], "email_type": ["Confirmation"]})
 
         app.load_data_csv = MagicMock(return_value=mock_df)
         app.classifier_option_check = MagicMock(return_value=True)
@@ -830,21 +838,17 @@ class TestEmailClassifierApp(unittest.TestCase):
         mock_model = MagicMock()
         app.set_multiclassifier_model_clf = MagicMock(return_value=mock_model)
 
-        app.CLASSIFIERS = {
-            "StackingClassifier": MagicMock()
-        }
+        app.CLASSIFIERS = {"StackingClassifier": MagicMock()}
 
         app.train_multiclassifier_pipeline(
             classifier_option="StackingClassifier",
             estimator_1="A",
             estimator_2="B",
-            estimator_3="C"
+            estimator_3="C",
         )
 
         app.CLASSIFIERS["StackingClassifier"].assert_called_once()
-        app.set_stacking_classifier_estimators.assert_called_once_with(
-            "A", "B", "C"
-        )
+        app.set_stacking_classifier_estimators.assert_called_once_with("A", "B", "C")
         mock_model.train.assert_called_once()
 
     def test_train_3_stage_pipelines_all_supported_classifiers(self):
@@ -855,12 +859,14 @@ class TestEmailClassifierApp(unittest.TestCase):
         # --------------------------
         # Mock dataset
         # --------------------------
-        mock_df = pd.DataFrame({
-            "email_text": ["a", "b"],
-            "related_to_jobhunt": [True, False],
-            "is_confirmation": [False, True],
-            "is_invitation": [True, False],
-        })
+        mock_df = pd.DataFrame(
+            {
+                "email_text": ["a", "b"],
+                "related_to_jobhunt": [True, False],
+                "is_confirmation": [False, True],
+                "is_invitation": [True, False],
+            }
+        )
 
         app.load_data_csv = MagicMock(return_value=mock_df)
         app.classifier_option_check = MagicMock(return_value=True)
@@ -935,16 +941,21 @@ class TestEmailClassifierApp(unittest.TestCase):
                 model3.reset_mock()
 
     def test_train_3_stage_pipeline_unsupported_classifiers_fallback(self):
-        """Method that tests if Voting and Stacking classifiers are reset to MultinomialNB in 3 stage pipeline setup."""
+        """Method that tests if Voting and Stacking classifiers are reset to MultinomialNB
+        in 3 stage pipeline setup."""
 
         app = EmailClassifierApp()
 
-        app.load_data_csv = MagicMock(return_value=pd.DataFrame({
-            "email_text": ["x"],
-            "related_to_jobhunt": [True],
-            "is_confirmation": [False],
-            "is_invitation": [True],
-        }))
+        app.load_data_csv = MagicMock(
+            return_value=pd.DataFrame(
+                {
+                    "email_text": ["x"],
+                    "related_to_jobhunt": [True],
+                    "is_confirmation": [False],
+                    "is_invitation": [True],
+                }
+            )
+        )
 
         app.classifier_option_check = MagicMock(return_value=True)
         app.classifier = MagicMock()
@@ -970,15 +981,14 @@ class TestEmailClassifierApp(unittest.TestCase):
         app.CLASSIFIERS["MultinomialNB"].assert_called()
 
     def test_set_voting_classifier_parameters_invalid_voting_option(self):
-        """Method that tests set_voting_classifier_parameters method exception route when voting option is invalid."""
+        """Method that tests set_voting_classifier_parameters method exception route when
+        voting option is invalid."""
         app = EmailClassifierApp()
 
         app.classifier = MagicMock()
         app.classifier_option_check = MagicMock(return_value=True)
 
-        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
-            "MultinomialNB": MagicMock()
-        }
+        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {"MultinomialNB": MagicMock()}
 
         result = app.set_voting_classifier_parameters(
             estimator_1="MultinomialNB",
@@ -994,14 +1004,13 @@ class TestEmailClassifierApp(unittest.TestCase):
         app.classifier.set_clf_vtc.assert_not_called()
 
     def test_set_voting_classifier_parameters_invalid_estimators(self):
-        """Method tests the set_voting_classifier_parameters method exception route when estimators and voting option are invalid."""
+        """Method tests the set_voting_classifier_parameters method exception route when
+        estimators and voting option are invalid."""
         app = EmailClassifierApp()
         app.classifier = MagicMock()
 
         # Valid estimator registry
-        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
-            "MultinomialNB": MagicMock()
-        }
+        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {"MultinomialNB": MagicMock()}
 
         # All combinations with at least one invalid estimator
         test_cases = [
@@ -1101,7 +1110,8 @@ class TestEmailClassifierApp(unittest.TestCase):
                 app.classifier.set_clf_vtc.assert_called_once()
 
     def test_set_voting_classifier_parameters_all_estimators(self):
-        """Method that tests set_voting_classifier_parameters method's success route with all possible estimators."""
+        """Method that tests set_voting_classifier_parameters method's success route with
+        all possible estimators."""
         app = EmailClassifierApp()
 
         # --------------------------
@@ -1204,9 +1214,7 @@ class TestEmailClassifierApp(unittest.TestCase):
         app.classifier = MagicMock()
 
         # Registry with only one valid estimator
-        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {
-            "MultinomialNB": MagicMock()
-        }
+        app.classifier.ESTIMATORS_AND_CLASSIFIERS = {"MultinomialNB": MagicMock()}
 
         # All combinations where at least one estimator is invalid
         test_cases = [
@@ -1296,7 +1304,6 @@ class TestEmailClassifierApp(unittest.TestCase):
             "ExtraTreeClassifier",
         ]
 
-
         # Mock estimator constructors
         estimators_dict = {}
         for name in estimator_names:
@@ -1336,6 +1343,7 @@ class TestEmailClassifierApp(unittest.TestCase):
 
             # Final classifier creation
             app.classifier.set_clf_stc.assert_called_once()
+
 
 if __name__ == "__main__":
     unittest.main()
