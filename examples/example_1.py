@@ -5,7 +5,7 @@ from src.interface.emailclassifierapp import EmailClassifierApp
 app = EmailClassifierApp()
 
 emails = [
-    """(...)
+"""(...)
 
 Thanks for your application for the Example Job position at Example Company. 
 
@@ -19,11 +19,15 @@ so let us know which one works best for you:
 
 (...)
  """,
-    """(...)
+"""(...)
 
-Click the link below and claim your personal discount on all games in our store.
+Thanks for your application for the Example Job position at Example Company. 
 
-The autumn sale starts today. This link will be valid until November 30th.
+We will contact you if your profile matches our requirements.
+
+More information about the company, our organizational culture, and the values 
+
+that we uphold can be found on our website.
 
 (...)
 """,

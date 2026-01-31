@@ -10,16 +10,22 @@ emails = [
 
 Thanks for your application for the Example Job position at Example Company. 
 
-We will contact you if your profile matches our requirements
+Unfortunately after careful consideration we will not be moving forward with your application.
+
+We wish you the best of luck in your job search and would encourage you to apply for future
+ 
+positions that may be a better match for your skills and experience. 
 
 (...)
  """,
     """(...)
 
 
-Join our new course platform.
+We hope this email finds you well.
 
-We give 20% discount for new users!
+We have noticed that you didn't log in to your user account since February.
+
+In the meanwhile our data policy has changed, you can read the new terms in the link below: 
 
 (...)
 """,
